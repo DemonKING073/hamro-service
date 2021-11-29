@@ -1,10 +1,11 @@
 import React from "react"
 import styled from "styled-components"
-import { Form, Button, Input, Image } from 'antd'
-import Logo from '../assets/logo.png'
+import { Form, Button, Input } from 'antd'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+import { Logo } from "../components/Logo"
 
 const Container = styled.div`
-    background-color: blue;
+    background-color: #EEC180;
     height: 100vh;
 `
 const  FormContainer = styled.div`
@@ -29,38 +30,47 @@ const FormButton = styled(Button)`
     width: 100% ;
     marginTop: 18px;
 `
-const SLogo = styled(Image)`
-    height: 100px;
-    width: 100px;
-`
-const LogoContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 14px;
-`
+
+
 
 const Login = () => {
+    const [form] = Form.useForm()
+
+    const onFinish = (values:any) => {
+        console.log('Received values of form: ', values);
+      };
+
     return(
         <Container>
             <FormContainer>
-                <Form layout='vertical'>
-                    <LogoContainer>
-                        <SLogo preview={false} alt='logo' src={Logo} />
-                    </LogoContainer>
+                <Form layout='vertical' onFinish={onFinish} form={form}>
+                    <Logo />
                     <Form.Item 
                         label='Username' 
-                        rules={[{required: true, message: 'Please provide your user name'}]}
+                        name='username'
+                        rules={[
+                            {
+                              required: true,
+                              message: 'Please input your username!',
+                            },
+                          ]}
                     >
-                        <Input placeholder='Enter your username' />
+                        <Input prefix={<UserOutlined />} placeholder='Enter your username' />
                     </Form.Item>
                     <Form.Item 
                         label='Password'
-                        rules={[{required: true, message: 'Please provide your password'}]}
+                        name='password'
+                        rules={[
+                            {
+                              required: true,
+                              message: 'Please input your password!',
+                            },
+                          ]}
                     >
-                        <Input type='password' placeholder='Enter your password' />
+                        <Input.Password prefix={<LockOutlined />} placeholder='Enter your password'  />
                     </Form.Item>
                     <Form.Item>
-                        <FormButton size='large' type='primary'>Login</FormButton>
+                        <FormButton onClick={()=>alert('fuck you')} size='large' type='primary'>Login</FormButton>
                     </Form.Item>
                 </Form>
             </FormContainer>
