@@ -3,6 +3,11 @@ import styled from "styled-components";
 import { Logo } from "./Logo";
 import { Image } from "antd";
 import Avatar from '../assets/user.png'
+import { NavLink } from 'react-router-dom'
+import SidebarItem from "./SideBarItem";
+import { AreaChartOutlined, InboxOutlined, CarOutlined } from '@ant-design/icons'
+import ScrollBarWraper from "./ScrollBarWraper";
+
 
 const Title = styled.h1`
     text-align: center;
@@ -35,6 +40,10 @@ const UserImage = styled(Image)`
     height: 60px;
     width: 60px;
 `
+const Nav = styled.nav`
+    display: flex;
+    flex-direction: column;
+`
 
 export const Sidebar = () => {
     return(
@@ -47,7 +56,26 @@ export const Sidebar = () => {
                 <Title>Hamro Service Admin</Title>
                 {/* <SubTitle>Hamro Service Admin</SubTitle> */}
             </div>
-            
+            <Nav>
+                <NavLink to='/'  >
+                    <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
+                </NavLink>
+                <NavLink to='/'  >
+                    <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
+                </NavLink>
+                <NavLink to='/'  >
+                    <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
+                </NavLink>
+                <NavLink to='/products'  >
+                    <SidebarItem Icon={InboxOutlined} text='Products' />
+                </NavLink>
+                <NavLink to='/orders'  >
+                    <SidebarItem Icon={CarOutlined} text='Orders' />
+                </NavLink>
+                <NavLink to='/orders'  >
+                    <SidebarItem Icon={CarOutlined} text='Orders' />
+                </NavLink>
+            </Nav>
         </Container>
     )
 }

@@ -1,12 +1,12 @@
 import React from "react"
 import MainTemplate from "../components/MainTemplate"
 
-const Home = () => {
+const Order = () => {
     return(
         <MainTemplate>
-            This is dashboard
+            This is Order
         </MainTemplate>
     )
 }
 
-export default Home
+export default Order
