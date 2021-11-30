@@ -1,6 +1,11 @@
 import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyles =  createGlobalStyle`
+    :root{
+        --primary: #E48700;
+        --secondary: #EEC180;
+        --main: #EEEEEE;
+    }
     *{
         margin: 0;
         padding: 0;

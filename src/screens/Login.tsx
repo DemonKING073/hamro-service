@@ -5,7 +5,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Logo } from "../components/Logo"
 
 const Container = styled.div`
-    background-color: #EEC180;
+    background-color: var(--secondary);
     height: 100vh;
 `
 const  FormContainer = styled.div`
@@ -67,10 +67,13 @@ const Login = () => {
                             },
                           ]}
                     >
-                        <Input.Password prefix={<LockOutlined />} placeholder='Enter your password'  />
+                        <Input.Password 
+                            prefix={<LockOutlined />} 
+                            placeholder='Enter your password'  
+                        />
                     </Form.Item>
                     <Form.Item>
-                        <FormButton onClick={()=>alert('fuck you')} size='large' type='primary'>Login</FormButton>
+                        <FormButton size='large' type='primary'>Login</FormButton>
                     </Form.Item>
                 </Form>
             </FormContainer>
