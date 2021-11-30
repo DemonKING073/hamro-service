@@ -3,7 +3,9 @@ import styled from "styled-components"
 import { Form, Button, Input } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Logo } from "../components/Logo"
+import axios from "axios"
 
+import { useNavigate } from 'react-router-dom'
 const Container = styled.div`
     background-color: var(--secondary);
     height: 100vh;
@@ -34,10 +36,17 @@ const FormButton = styled(Button)`
 
 
 const Login = () => {
+    const navigate = useNavigate()
     const [form] = Form.useForm()
-
-    const onFinish = (values:any) => {
+    const onFinish = async (values:any) => {
         console.log('Received values of form: ', values);
+        try {
+            const response = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
+            console.log(response)
+            navigate('/')
+        } catch(err) {
+            console.error(err)
+        }
       };
 
     return(
@@ -73,7 +82,7 @@ const Login = () => {
                         />
                     </Form.Item>
                     <Form.Item>
-                        <FormButton size='large' type='primary'>Login</FormButton>
+                        <FormButton htmlType='submit' size='large' type='primary'>Login</FormButton>
                     </Form.Item>
                 </Form>
             </FormContainer>
