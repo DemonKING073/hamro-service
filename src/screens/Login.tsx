@@ -6,6 +6,7 @@ import { Logo } from "../components/Logo"
 import axios from "axios"
 
 import { useNavigate } from 'react-router-dom'
+import LocalStorageService from "../services/LocalStorageServices"
 const Container = styled.div`
     background-color: var(--secondary);
     height: 100vh;
@@ -42,7 +43,7 @@ const Login = () => {
         console.log('Received values of form: ', values);
         try {
             const response = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
-            console.log(response)
+            LocalStorageService.setAccessToken(response.data.accessToken)
             navigate('/')
         } catch(err) {
             console.error(err)
