@@ -50,11 +50,6 @@ export const Sidebar = () => {
         <Container>
             <div>
                 <Logo />
-                {/* <ProfileContainer>
-                <UserImage alt='user' src={Avatar} />
-                </ProfileContainer> */}
-                <Title>Hamro Service Admin</Title>
-                {/* <SubTitle>Hamro Service Admin</SubTitle> */}
             </div>
             <Nav>
                 <NavLink to='/'  >

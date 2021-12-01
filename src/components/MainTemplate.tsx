@@ -1,8 +1,10 @@
-import { Input } from "antd";
+import { Input, notification } from "antd";
 import React, { FC } from "react";
 import styled from "styled-components";
 import { Sidebar } from "./Sidebar";
 import { SearchOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
+import LocalStorageService from "../services/LocalStorageServices";
+import { useNavigate } from "react-router";
 
 const Container = styled.div`
     display: flex;
@@ -40,6 +42,7 @@ const IconOutline = styled.div`
     align-items: center;
     justify-content: center;
     margin-right: 10px;
+    cursor: pointer;    
     &:last-child {
         margin-right: 30px;
     }
@@ -48,7 +51,14 @@ const IconBox = styled.div`
     display: flex;
 `
 
-const MainTemplate:FC<any> = ({children}) => {
+const MainTemplate:FC = ({children}) => {
+    const navigate = useNavigate()
+    const logout = () => {
+        LocalStorageService.clearTokens()
+        notification.success({message:'Logged Out Successfully!'})
+        navigate('/login')
+    }
+
     return(
         <Container>
             <Sidebar />
@@ -58,10 +68,10 @@ const MainTemplate:FC<any> = ({children}) => {
                         <Input prefix={<SearchOutlined/>} style={{borderRadius:20,height:45}} placeholder='Search...' />
                     </SearchBox>
                     <IconBox>
-                        <IconOutline>
+                        <IconOutline onClick={() => alert('fuck you')}>
                             <SettingOutlined style={{color: `var(--primary)`,fontSize: 25}} />
                         </IconOutline>
-                        <IconOutline>
+                        <IconOutline onClick={logout}>
                             <LogoutOutlined style={{color:`var(--primary)`,fontSize: 25}} />
                         </IconOutline>
                     </IconBox>
