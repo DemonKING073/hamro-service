@@ -5,8 +5,7 @@ import { Image } from "antd";
 import Avatar from '../assets/user.png'
 import { NavLink } from 'react-router-dom'
 import SidebarItem from "./SideBarItem";
-import { AreaChartOutlined, InboxOutlined, CarOutlined } from '@ant-design/icons'
-import ScrollBarWraper from "./ScrollBarWraper";
+import { AreaChartOutlined, InboxOutlined, CarOutlined, GlobalOutlined } from '@ant-design/icons'
 
 
 const Title = styled.h1`
@@ -55,8 +54,8 @@ export const Sidebar = () => {
                 <NavLink to='/'  >
                     <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
                 </NavLink>
-                <NavLink to='/'  >
-                    <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
+                <NavLink to='/region'  >
+                    <SidebarItem Icon={GlobalOutlined} text='Region' />
                 </NavLink>
                 <NavLink to='/'  >
                     <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
