@@ -5,11 +5,12 @@ import { Sidebar } from "./Sidebar";
 import { SearchOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 import LocalStorageService from "../services/LocalStorageServices";
 import { useNavigate } from "react-router";
+import ScrollBarWraper from "./ScrollBarWraper";
 
 const Container = styled.div`
     display: flex;
     flex: 1;
-    flex-grow: 1,
+    flex-grow: 1;
     height: 100vh;
     background-color: var(--main)
 `

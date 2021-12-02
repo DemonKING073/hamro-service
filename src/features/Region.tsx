@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import MainTemplate from "../components/MainTemplate";
-import { Menu, Dropdown, Button, Select, Input, Drawer, Form } from 'antd'
+import { Menu, Dropdown, Button, Select, Input, Drawer, Form, Table, Tag, Space } from 'antd'
 import { FileAddOutlined, SearchOutlined, SettingOutlined, CloseOutlined } from '@ant-design/icons'
 
 const { Option } = Select;
@@ -16,12 +16,16 @@ const TopContainer = styled.div`
 const SettingContainer = styled.div`
     padding: 14px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 `
 const SubSettingContainer = styled.div`
     display: flex;
     align-items: center;
+`
+
+const TableContainer = styled.div`
+    height: 55vh;
 `
 
 const SortContainer = styled.div`
@@ -43,7 +47,7 @@ const SortButton = styled.span`
 `
 const FormButton = styled(Button)`
     width: 100% ;
-    marginTop: 18px;
+    margin-top: 18px;
 `
 
 
@@ -61,9 +65,36 @@ const sort = (
     </Menu>
   );
 
+const columns = [
+    {
+        title: 'Id',
+        dataIndex:'id',
+        key: 'id',
+    },
+    {
+        title: 'Region Name',
+        dataIndex: 'name',
+        key:'name',
+    },
+    {
+        title: 'Slug',
+        dataIndex: 'slug',
+        key: 'slug',
+    },
+    {
+        title: 'Location',
+        dataIndex:'location',
+        key: 'location',
+        render: (location: { lat: number, lng: number }) => <>
+            <span style={{fontWeight:'bold'}}>Latitude:</span> {location.lat}<br/>
+            <span style={{fontWeight:'bold'}}>Longitude:</span> {location.lng}
+        </>
+    }
+]
+
 const Region = () => {
     const [form] = Form.useForm()
-    const [ showDrawer, setShowDrawer ] = useState<any>(true)
+    const [ showDrawer, setShowDrawer ] = useState(false)
     const closeDrawer = () => {
         setShowDrawer(false)
     }
@@ -128,10 +159,10 @@ const Region = () => {
                     <Option value='regionaladmin'>Regional Admin</Option>
                     <Option value='superadmin'>Super Admin</Option>
                 </Select>
-                <Button onClick={() => setShowDrawer(true)} style={{backgroundColor:'var(--primary)', color: 'white',borderRadius:6}}  ><FileAddOutlined />Add Region</Button>
+                <Button onClick={() => setShowDrawer(true)} type='primary'  ><FileAddOutlined />Add Region</Button>
             </TopContainer>
             <SettingContainer>
-                <SortContainer>
+                {/* <SortContainer>
                     <div style={{display:'flex',alignItems:'center'}}>
                         <span style={{fontWeight:'bold'}}>Leads</span>
                         <DarkCircle>{1}</DarkCircle>
@@ -139,13 +170,14 @@ const Region = () => {
                     <Dropdown overlay={sort}>
                         <SortButton> Sort</SortButton>
                     </Dropdown>
-                </SortContainer>
+                </SortContainer> */}
                 <SubSettingContainer>
                     <Input prefix={<SearchOutlined/>} style={{borderRadius:20,height:35}} placeholder='Search...' />
-                    <SettingOutlined style={{fontSize: 20, marginLeft:10}} />
                 </SubSettingContainer>
             </SettingContainer>
-
+            <TableContainer>
+                <Table pagination={{pageSize:4}} columns={columns} dataSource={[{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}}]} />
+            </TableContainer>
         </MainTemplate>
     )
 }

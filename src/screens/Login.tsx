@@ -32,7 +32,7 @@ const  FormContainer = styled.div`
 
 const FormButton = styled(Button)`
     width: 100% ;
-    marginTop: 18px;
+    margin-top: 18px;
 `
 
 

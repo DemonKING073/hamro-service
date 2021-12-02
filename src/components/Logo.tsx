@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Image } from 'antd'
-import HLogo from '../assets/logo.png'
+import { Image } from 'antd';
+import HLogo from "../assets/logo.png";
 
 const LogoContainer = styled.div`
     display: flex;
