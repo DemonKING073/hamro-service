@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MainTemplate from "../components/MainTemplate";
 import { Menu, Dropdown, Button, Select, Input, Drawer, Form, Table, Tag, Space } from 'antd'
 import { FileAddOutlined, SearchOutlined, SettingOutlined, CloseOutlined } from '@ant-design/icons'
+import axios from "axios";
 
 const { Option } = Select;
 
@@ -93,6 +94,17 @@ const columns = [
 ]
 
 const Region = () => {
+    const [ regionData, setRegionData ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false)
+    useEffect(() => {
+        setIsLoading(true)
+        axios.get('http://localhost:8080/region')
+        .then((res) => {
+            setRegionData(res.data)
+            setIsLoading(false)
+        })
+        .catch((err) => console.log(err))
+    },[])
     const [form] = Form.useForm()
     const [ showDrawer, setShowDrawer ] = useState(false)
     const closeDrawer = () => {
@@ -176,7 +188,7 @@ const Region = () => {
                 </SubSettingContainer>
             </SettingContainer>
             <TableContainer>
-                <Table pagination={{pageSize:4}} columns={columns} dataSource={[{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}},{id:1,name:'kathmandu',slug:'koi kei hola',location:{lat:4423232,lng:2323232}}]} />
+                <Table loading={isLoading} pagination={{pageSize:4}} columns={columns} dataSource={regionData} />
             </TableContainer>
         </MainTemplate>
     )

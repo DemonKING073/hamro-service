@@ -16,7 +16,7 @@ const Container = styled.div`
 `
 const SubContainer = styled.div`
     flex: 80%;
-    flexDirection: column;
+    flex-direction: column;
     height: 100vh;
 `
 const TopPanel = styled.div`
