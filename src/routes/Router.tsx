@@ -5,7 +5,7 @@ import Login from "../screens/Login"
 import Orders from "../features/Orders"
 import Products from "../features/Products"
 import Auth from '../Auth'
-import Region from "../features/Region"
+import Region from "../features/Region/index"
 
 const Router = () => {
     return(
