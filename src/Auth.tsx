@@ -3,9 +3,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router";
 import LocalStorageService from "./services/LocalStorageServices";
 
 const Auth = () => {
-    console.log('hello')
     const token = LocalStorageService.getAccessToken()
-    console.log(token)
     let location = useLocation();
 
     if(token){
