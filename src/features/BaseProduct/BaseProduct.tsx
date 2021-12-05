@@ -4,11 +4,11 @@ import styled from "styled-components"
 import BaseProductProps from "../../types/BaseProduct"
 import RegionProps from '../../types/Region'
 import LocalStorageService from "../../services/LocalStorageServices"
-import { Button, Drawer, notification, Table } from "antd"
+import { Button, Drawer, notification, Select, Table, Form } from "antd"
 import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
-import CreateBaseProductForm from "../Region/Forms/CreateBaseProductForm"
+import CreateBaseProductForm from "./forms/CreateBaseProductForm"
 const TopContainer = styled.div`
     height: 80px;
     display: flex;
@@ -25,12 +25,18 @@ const TableButtonContainer = styled.div`
     display: flex;
     justify-content: space-around;
 `
+const OptionContainer = styled.div`
+    margin-right: 15px;
+`
+
+const { Option } = Select;
 
 
 const BaseProduct = () => {
     const [ addDrawer, setAddDrawer ] = useState(false)
-    const [ workingRecord, setWorkingRecord ] = useState<BaseProductProps | null>()
     const [ token, setToken ] = useState<string | null>()
+    const [regionData, setRegionData] = useState<RegionProps[]>([])
+    const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
     const [ isLoading, setIsLoading ] = useState(false)
     const [ baseProducts, setBaseProducts ] = useState<BaseProductProps[]>([])
 
@@ -82,9 +88,10 @@ const BaseProduct = () => {
     ]
     const fetchBaseProduct = async () => {
         try{
+            setIsLoading(true)
             const resposne = await axios.get('http://localhost:8080/base_product',{
                 'headers': {
-                    'regionId': `${1}`
+                    'regionId': `${currentRegion?.id}`
                 }
             })
             setIsLoading(false)
@@ -96,7 +103,6 @@ const BaseProduct = () => {
         }
     }
     const addBaseProduct = async (values: any) => {
-        console.log(values)
         try{
             const response = await axios.post('http://localhost:8080/base_product',values,{
                 headers:{
@@ -112,15 +118,57 @@ const BaseProduct = () => {
             notification.error({message: err.response.data.message })
         }
     }
-   
-    useEffect(() => {
+  
+    useEffect(()=> {
         setIsLoading(true)
-        fetchBaseProduct()
+        axios.get('http://localhost:8080/region')
+        .then((res) => {
+            setRegionData(res.data)
+            setCurrentRegion(res.data[0])
+            form.resetFields()
+            return res.data
+        })
+        .then((data:any)=>{
+            return axios.get(`http://localhost:8080/base_product`,{
+                headers:{
+                    'regionId': `${data[0].id}`
+                }
+            })
+        })
+        .then((res: any)=> {
+            setBaseProducts(res.data)
+            setIsLoading(false)
+        })
+        .catch((err) => console.log(err))
     },[])
+    useEffect(()=>{
+        console.log('i am running')
+        if(currentRegion) fetchBaseProduct()
+    },[currentRegion])
+   
+    const [form] = Form.useForm()
+
+    const handleRegionChange = (value: any) => {
+        const newRegion = regionData.find((item) => item.id === value)
+        setCurrentRegion(newRegion)
+    }
     return(
         <MainTemplate>
             <CreateBaseProductForm  visible={addDrawer} onFinish={(value)=>addBaseProduct(value)} onClose={()=>setAddDrawer(false)}  />
             <TopContainer>
+                <OptionContainer>
+                    <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
+                    <Form.Item
+                        name='regionId'
+                    >
+                    <Select onChange={handleRegionChange} defaultValue={currentRegion?.id}>
+                        {regionData.map((item: RegionProps) => (
+                            <Option key={item.id} value={item.id} >{item.name}</Option>
+                        ))}
+                    </Select>
+                    </Form.Item>
+                    </Form>
+                </OptionContainer>
                 <Button  type='primary' onClick={()=> setAddDrawer(true)}  ><FileAddOutlined />Add Base Product</Button>
             </TopContainer>
             <MainContainer>

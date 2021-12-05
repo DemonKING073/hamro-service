@@ -81,7 +81,7 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
     }
     return(
         <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Base Product</span>} placement='right'>
-            <Form initialValues={{name:'', regionId: workingRegion?.id,categoryId:workingCategory?.id}} form={form} layout='vertical' onFinish={onFinish}>
+            <Form form={form} initialValues={{name:'', regionId: workingRegion?.id,categoryId:workingCategory?.id}}  layout='vertical' onFinish={onFinish}>
                     <Form.Item
                         label='Select Region'
                         name='regionId'
