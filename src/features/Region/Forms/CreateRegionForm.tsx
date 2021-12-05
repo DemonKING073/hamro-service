@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Drawer, DrawerProps, Form, Input } from "antd";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import styled from "styled-components";
 
 const FormButton = styled(Button)`
@@ -13,8 +13,12 @@ type CustomDrawerProps = DrawerProps & {
     onClose: ()=> void;
 }
 
+
 const CreateRegionForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
     const [form] = Form.useForm()
+    useEffect(() => {
+        if(visible) form.resetFields()
+    },[visible])
     return(
         <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Region Description</span>} placement='right'>
             <Form  form={form} layout='vertical' onFinish={onFinish}>

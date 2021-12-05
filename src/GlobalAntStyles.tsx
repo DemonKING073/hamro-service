@@ -6,8 +6,9 @@ export const GlobalAntStyles =  createGlobalStyle`
         background: var(--primary);
         border-color: var(--primary);
         &:hover{
-            background: #C07200;
-            border-color: var(--secondary);
+            background: white;
+            color: var(--primary);
+            border-color: var(--primary);
         }
     }
     .ant-table table {

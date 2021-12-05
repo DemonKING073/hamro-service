@@ -89,7 +89,6 @@ const Region = () => {
         .then((res) => {
             setRegionData(res.data)
             setIsLoading(false)
-            console.log('bibek')
         })
         .catch((err) => console.log(err))
     }
@@ -150,9 +149,7 @@ const Region = () => {
     const [ isLoading, setIsLoading ] = useState(false)
     useEffect(() => {
         setIsLoading(true)
-        console.log('fuck you')
         fetchRegions()
-        setIsLoading(false)
     },[])
     return(
         <MainTemplate>

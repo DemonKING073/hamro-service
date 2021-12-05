@@ -57,11 +57,8 @@ export const Sidebar = () => {
                 <NavLink to='/region'  >
                     <SidebarItem Icon={GlobalOutlined} text='Region' />
                 </NavLink>
-                <NavLink to='/'  >
-                    <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
-                </NavLink>
-                <NavLink to='/products'  >
-                    <SidebarItem Icon={InboxOutlined} text='Products' />
+                <NavLink to='/baseproducts'  >
+                    <SidebarItem Icon={InboxOutlined} text='Base Product' />
                 </NavLink>
                 <NavLink to='/orders'  >
                     <SidebarItem Icon={CarOutlined} text='Orders' />
