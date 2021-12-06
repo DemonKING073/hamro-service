@@ -9,6 +9,10 @@ import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
 import CreateBaseProductForm from "./forms/CreateBaseProductForm"
+import { createBaseProducts, getBaseProducts } from "../../apis/baseProduct"
+import ApiError from "../../types/ApiError"
+import { useQuery, useMutation } from 'react-query'
+
 const TopContainer = styled.div`
     height: 80px;
     display: flex;
@@ -34,17 +38,24 @@ const { Option } = Select;
 
 const BaseProduct = () => {
     const [ addDrawer, setAddDrawer ] = useState(false)
-    const [ token, setToken ] = useState<string | null>()
     const [regionData, setRegionData] = useState<RegionProps[]>([])
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
     const [ isLoading, setIsLoading ] = useState(false)
     const [ baseProducts, setBaseProducts ] = useState<BaseProductProps[]>([])
 
-    useEffect(() => {
-        const token = LocalStorageService.getAccessToken()
-        setToken(token)
-    },[])
-    
+    const { isLoading: isBaseProuductsLoading, error, data, refetch: refetchBaseProducts } = useQuery('get/base_product', getBaseProducts)
+
+    const { mutateAsync: mutateBaseProduct} = useMutation(createBaseProducts, {
+        onSuccess: () => {
+            refetchBaseProducts()
+        },
+        onError: (err) => {
+            if(axios.isAxiosError(err)) {
+
+            }
+        }
+    })
+
     const columns = [
         {
             title: 'Id',
@@ -56,7 +67,7 @@ const BaseProduct = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            width:'30%'
+            width:'25%'
         },
         {
             title: 'Slug',
@@ -68,7 +79,7 @@ const BaseProduct = () => {
             title: 'Region ID',
             dataIndex: 'regionId',
             key: 'id',
-            width:'5%'
+            width:'10%'
         },
         {
             title: 'Category ID',
@@ -102,22 +113,6 @@ const BaseProduct = () => {
             notification.error({message: err.response.data.message })
         }
     }
-    const addBaseProduct = async (values: any) => {
-        try{
-            const response = await axios.post('http://localhost:8080/base_product',values,{
-                headers:{
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            notification.success({message:'Base Product Successfully Added!'})
-            fetchBaseProduct()
-            setAddDrawer(false)
-        }
-        catch(err: any){
-            console.log(err)
-            notification.error({message: err.response.data.message })
-        }
-    }
   
     useEffect(()=> {
         setIsLoading(true)
@@ -141,8 +136,8 @@ const BaseProduct = () => {
         })
         .catch((err) => console.log(err))
     },[])
+
     useEffect(()=>{
-        console.log('i am running')
         if(currentRegion) fetchBaseProduct()
     },[currentRegion])
    
@@ -152,9 +147,10 @@ const BaseProduct = () => {
         const newRegion = regionData.find((item) => item.id === value)
         setCurrentRegion(newRegion)
     }
+
     return(
         <MainTemplate>
-            <CreateBaseProductForm  visible={addDrawer} onFinish={(value)=>addBaseProduct(value)} onClose={()=>setAddDrawer(false)}  />
+            <CreateBaseProductForm  visible={addDrawer} onFinish={mutateBaseProduct} onClose={()=>setAddDrawer(false)}  />
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
