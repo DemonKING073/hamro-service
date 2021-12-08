@@ -8,8 +8,10 @@ const FormButton = styled(Button)`
     width: 100% ;
     margin-top: 18px;
 `
+type regionInputProp = Omit<RegionProps, 'id' | 'slug'>
+
 type CustomDrawerProps = DrawerProps & {
-    onFinish: (values: any)=> Promise<void>;
+    onFinish: (values: regionInputProp)=> void;
     visible: boolean;
     onClose: ()=> void;
     meroData: undefined | RegionProps |null;

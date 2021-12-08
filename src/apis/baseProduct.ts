@@ -4,7 +4,6 @@ import RegionProp from '../types/Region'
 
 type CreateBaseProductData = Omit<BaseProduct, 'id' | 'slug'>
 
-export const getRegion = async () => (await axiosInstance.get<RegionProp[]>('/region')).data
 
 export const getBaseProducts = async (regionId: number) => (await axiosInstance.get<BaseProduct[]>('/base_product',{ headers: { 'regionId': `${regionId}` } })).data
 

@@ -8,10 +8,11 @@ import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
 import CreateBaseProductForm from "./forms/CreateBaseProductForm"
-import { createBaseProducts, getBaseProducts, getRegion } from "../../apis/baseProduct"
+import { createBaseProducts, getBaseProducts } from "../../apis/baseProduct"
 import ApiError from "../../types/ApiError"
 import { useQuery, useMutation } from 'react-query'
 import NotificationService from "../../services/NotificationService"
+import { getRegion } from "../../apis/region"
 
 
 

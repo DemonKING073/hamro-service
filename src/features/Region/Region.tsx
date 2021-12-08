@@ -1,48 +1,27 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import MainTemplate from "../../components/MainTemplate";
-import { Menu, Dropdown, Button, Select, Input, Drawer, Form, Table, Tag, Space, notification, Modal } from 'antd'
-import { FileAddOutlined, SearchOutlined, SettingOutlined, CloseOutlined } from '@ant-design/icons'
-import axios from "axios";
-import LocalStorageService from "../../services/LocalStorageServices";
+import { Button, Select, Input, Table, Modal } from 'antd'
+import { FileAddOutlined, SearchOutlined } from '@ant-design/icons'
 import CButton from "../../components/CButton";
-import CustomDrawer from "../../components/CustomDrawer";
 import CreateRegionForm from "./Forms/CreateRegionForm";
 import UpdateRegionForm from "./Forms/UpdateRegionForm";
 import RegionProps from '../../types/Region'
+import { useMutation, useQuery } from "react-query";
+import NotificationService from "../../services/NotificationService";
+import { addRegion, getRegion, removeRegion, updateRegion } from "../../apis/region";
+import axiosCheckError from "../../axiosCheckError";
 
 
 const { Option } = Select;
 
-
-const TopContainer = styled.div`
-    display: flex;
-    padding: 15px;
-    justify-content: space-between;
-    align-items: center;
-`
-
-const TableContainer = styled.div`
-    height: 55vh;
-`
-
-
-const TableButtonContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-`
+type regionInputProp = Omit<RegionProps, 'id' | 'slug'>
 
 const Region = () => {
     const [ delModal, setDelModal ] = useState(false)
     const [ showDrawer, setShowDrawer ] = useState(false)
-    const [ token, setToken ] = useState<string | null>()
     const [ UpdateDrawer, setUpdateDrawer ] = useState(false)
     const [ workingRecord, setWorkingRecord ] = useState<RegionProps | null>()
-
-    useEffect(() => {
-        const token = LocalStorageService.getAccessToken()
-        setToken(token)
-    },[])
     const columns = [
         {
             title: 'Id',
@@ -83,81 +62,72 @@ const Region = () => {
         }
     ]
 
-    const [ regionData, setRegionData ] = useState<RegionProps[]>([]);
-    const fetchRegions = async () => {
-        axios.get('http://localhost:8080/region')
-        .then((res) => {
-            setRegionData(res.data)
-            setIsLoading(false)
-        })
-        .catch((err) => console.log(err))
-    }
-  
-    const addRegion =  async (values:any) => {
-        console.log('Received values of form: ', values);
-        try{
-            const response = await axios.post('http://localhost:8080/region',values,{
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            notification.success({message:'Region Successfully Added!'})
-            fetchRegions()
+    const { isLoading: isRegionLoading, data: regionDatas, refetch: refetchRegion } = useQuery('fetchRegion',getRegion,{
+        onSuccess: (regionDatas) => {
+            // console.log(regionDatas)
+            setWorkingRecord(regionDatas[0])
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
+        }
+    })
+    const { mutateAsync: postRegion} = useMutation((values: regionInputProp) => addRegion(values),{
+        onSuccess: () => {
+            NotificationService.showNotification('success','SucessFully Added Region!')
+            setShowDrawer(false)
+            refetchRegion()
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
             setShowDrawer(false)
         }
-        catch(err:any){
-            console.log(err.response.data)
-            notification.error({message:err.response.data.message})
-        }
-      }
+    })
 
-    const update =  async (values: any) => {
-        console.log(values)
-        try{
-            const response = await axios.put(`http://localhost:8080/region/${workingRecord?.id}`,values,{
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            notification.success({message: 'Region Updated SuccessFully!'})
-            fetchRegions()
+    const { mutateAsync: PutRegion } = useMutation((values: regionInputProp) => updateRegion(values, workingRecord?.id),{
+        onSuccess: () => {
+            NotificationService.showNotification('success','SucessFully Updated Region!')
             setUpdateDrawer(false)
+            refetchRegion()
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
+            setShowDrawer(false)
         }
-        catch(err: any){
-            console.log(err)
-            notification.error({message: err.response.data.message })
-        }
-    }
-    const deleteRegion = async () => {
-        console.log(workingRecord)
-        try{
-            const response = await axios.delete(`http://localhost:8080/region/${workingRecord?.id}`,{
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            notification.success({message: 'Record Removed!'})
-            fetchRegions()
+    }) 
+
+    const { mutateAsync: DeleteRegion } = useMutation('DeleteRegion', removeRegion,{
+        onSuccess: () => {
+            NotificationService.showNotification('success','SucessFully Deleteed Region!')
+            setDelModal(false)
+            refetchRegion()
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
             setDelModal(false)
         }
-        catch(err: any){
-            console.log(err)
-            notification.error({message: err.response.data.message })
-        }
-    }
+    })
+
    
-    const [ isLoading, setIsLoading ] = useState(false)
-    useEffect(() => {
-        setIsLoading(true)
-        fetchRegions()
-    },[])
     return(
         <MainTemplate>
-            <Modal  visible={delModal} okText='Remove' onOk={deleteRegion} onCancel={() => setDelModal(false)}>
+            <Modal  visible={delModal} okText='Remove' onOk={() => DeleteRegion(workingRecord?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
-            <CreateRegionForm visible={showDrawer} onClose={()=> setShowDrawer(false)} onFinish={addRegion} />
-            <UpdateRegionForm meroData={workingRecord} visible={UpdateDrawer} onClose={()=> {setUpdateDrawer(false); console.log('Mah bahira gako')}} onFinish={update} />
+            <CreateRegionForm visible={showDrawer} onClose={()=> setShowDrawer(false)} onFinish={(values: regionInputProp) => {
+                postRegion(values)}
+            }/>
+            <UpdateRegionForm 
+                meroData={workingRecord} 
+                visible={UpdateDrawer} 
+                onClose={()=> {setUpdateDrawer(false); }} 
+                onFinish={(values: any) =>{
+                    if(workingRecord) PutRegion(values)
+                }} 
+            />
             <TopContainer>
                 <div>
                 <Input prefix={<SearchOutlined/>} style={{borderRadius:20,height:35}} placeholder='Search...' />
@@ -179,11 +149,27 @@ const Region = () => {
                 </div>
             </TopContainer>
             <TableContainer>
-                <Table  loading={isLoading} pagination={{pageSize:5}} columns={columns} dataSource={regionData} />
+                <Table  loading={isRegionLoading} pagination={{pageSize:5}} columns={columns} dataSource={regionDatas} />
             </TableContainer>
         </MainTemplate>
     )
 }
 
+const TopContainer = styled.div`
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const TableContainer = styled.div`
+    height: 55vh;
+`
+
+
+const TableButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+`
 
 export default Region
