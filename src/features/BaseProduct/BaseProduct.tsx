@@ -3,47 +3,51 @@ import MainTemplate from "../../components/MainTemplate"
 import styled from "styled-components"
 import BaseProductProps from "../../types/BaseProduct"
 import RegionProps from '../../types/Region'
-import LocalStorageService from "../../services/LocalStorageServices"
-import { Button, Drawer, notification, Select, Table, Form } from "antd"
+import { Button, Select, Table, Form } from "antd"
 import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
 import CreateBaseProductForm from "./forms/CreateBaseProductForm"
-import { createBaseProducts, getBaseProducts } from "../../apis/baseProduct"
+import { createBaseProducts, getBaseProducts, getRegion } from "../../apis/baseProduct"
 import ApiError from "../../types/ApiError"
 import { useQuery, useMutation } from 'react-query'
+import NotificationService from "../../services/NotificationService"
 
-const TopContainer = styled.div`
-    height: 80px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
-`
-const MainContainer = styled.div`
-    height: 73vh;
-    width: 100%;
-`
-const TableButtonContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-`
-const OptionContainer = styled.div`
-    margin-right: 15px;
-`
+
 
 const { Option } = Select;
 
 
 const BaseProduct = () => {
     const [ addDrawer, setAddDrawer ] = useState(false)
-    const [regionData, setRegionData] = useState<RegionProps[]>([])
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
-    const [ isLoading, setIsLoading ] = useState(false)
-    const [ baseProducts, setBaseProducts ] = useState<BaseProductProps[]>([])
 
-    const { isLoading: isBaseProuductsLoading, error, data, refetch: refetchBaseProducts } = useQuery('get/base_product', getBaseProducts)
+    const { isLoading: isRegionLoading, error, data: regionData, refetch: refetchBaseProducts } = useQuery('fetchRegion',getRegion,{
+        onSuccess: (regionData) => {
+            // console.log(regionData)
+            if(regionData) setCurrentRegion(regionData[0])
+        },
+        onError: (err) => {
+            if(axios.isAxiosError(err)) {
+                const apiError = err as ApiError
+                const message = apiError.response?.data.message
+                if (message) NotificationService.showNotification('error', message.toString())
+            }
+        }
+    })
+
+    const {data: baseProduct, isLoading: isBaseProductLoading} = useQuery(['fetchBaseProduct', currentRegion],() => {
+        if(currentRegion) return getBaseProducts(currentRegion.id)
+    }, {
+        onError: (err) => {
+            if(axios.isAxiosError(err)) {
+                const apiError = err as ApiError
+                const message = apiError.response?.data.message
+                if (message) NotificationService.showNotification('error', message.toString())
+            }
+        }
+    })
+
 
     const { mutateAsync: mutateBaseProduct} = useMutation(createBaseProducts, {
         onSuccess: () => {
@@ -51,7 +55,9 @@ const BaseProduct = () => {
         },
         onError: (err) => {
             if(axios.isAxiosError(err)) {
-
+                const apiError = err as ApiError
+                const message = apiError.response?.data.message
+                if (message) NotificationService.showNotification('error', message.toString())
             }
         }
     })
@@ -78,76 +84,38 @@ const BaseProduct = () => {
         {
             title: 'Region ID',
             dataIndex: 'regionId',
-            key: 'id',
+            key: 'regionId',
             width:'10%'
         },
         {
             title: 'Category ID',
             dataIndex: 'categoryId',
             key: 'categoryId',
-            width:'10%'
+            width:'15%'
         },
         {
             title: 'Actions',
-            key:'name',
-            width:'30%',
+            key:'action',
+            width:'25%',
             render: (value: number, record: BaseProductProps) => <TableButtonContainer> 
             <CButton variant='normal' title='Update' />
             <CButton variant='danger' title='Remove' />
             </TableButtonContainer>
         }
     ]
-    const fetchBaseProduct = async () => {
-        try{
-            setIsLoading(true)
-            const resposne = await axios.get('http://localhost:8080/base_product',{
-                'headers': {
-                    'regionId': `${currentRegion?.id}`
-                }
-            })
-            setIsLoading(false)
-            setBaseProducts(resposne.data)
-        }
-        catch(err:any) {
-            console.log(err)
-            notification.error({message: err.response.data.message })
-        }
-    }
   
-    useEffect(()=> {
-        setIsLoading(true)
-        axios.get('http://localhost:8080/region')
-        .then((res) => {
-            setRegionData(res.data)
-            setCurrentRegion(res.data[0])
-            form.resetFields()
-            return res.data
-        })
-        .then((data:any)=>{
-            return axios.get(`http://localhost:8080/base_product`,{
-                headers:{
-                    'regionId': `${data[0].id}`
-                }
-            })
-        })
-        .then((res: any)=> {
-            setBaseProducts(res.data)
-            setIsLoading(false)
-        })
-        .catch((err) => console.log(err))
-    },[])
-
-    useEffect(()=>{
-        if(currentRegion) fetchBaseProduct()
-    },[currentRegion])
    
     const [form] = Form.useForm()
 
     const handleRegionChange = (value: any) => {
-        const newRegion = regionData.find((item) => item.id === value)
+        const newRegion = regionData?.find((item) => item.id === value)
         setCurrentRegion(newRegion)
     }
+    useEffect(() => {
+        form.resetFields()
+    },[currentRegion])
 
+    console.log(currentRegion)
     return(
         <MainTemplate>
             <CreateBaseProductForm  visible={addDrawer} onFinish={mutateBaseProduct} onClose={()=>setAddDrawer(false)}  />
@@ -158,7 +126,7 @@ const BaseProduct = () => {
                         name='regionId'
                     >
                     <Select onChange={handleRegionChange} defaultValue={currentRegion?.id}>
-                        {regionData.map((item: RegionProps) => (
+                        {regionData?.map((item: RegionProps) => (
                             <Option key={item.id} value={item.id} >{item.name}</Option>
                         ))}
                     </Select>
@@ -168,10 +136,30 @@ const BaseProduct = () => {
                 <Button  type='primary' onClick={()=> setAddDrawer(true)}  ><FileAddOutlined />Add Base Product</Button>
             </TopContainer>
             <MainContainer>
-                <Table loading={isLoading} pagination={{pageSize:6}} columns={columns} dataSource={baseProducts} />
+                <Table loading={isBaseProductLoading} pagination={{pageSize:5}} columns={columns} dataSource={baseProduct} />
             </MainContainer>            
         </MainTemplate>
     )
 }
+
+const TopContainer = styled.div`
+    height: 80px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+`
+const MainContainer = styled.div`
+    height: 73vh;
+    width: 100%;
+`
+const TableButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+`
+const OptionContainer = styled.div`
+    margin-right: 15px;
+`
 
 export default BaseProduct
