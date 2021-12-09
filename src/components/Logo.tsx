@@ -3,6 +3,15 @@ import styled from "styled-components";
 import { Image } from 'antd';
 import HLogo from "../assets/logo.png";
 
+
+export const Logo = () => {
+    return(
+        <LogoContainer>
+            <SLogo preview={false} alt='logo' src={HLogo} />
+        </LogoContainer>
+    )
+}
+
 const LogoContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -17,11 +26,3 @@ const SLogo = styled(Image)`
     background: white;
     border-radius: 50%;
 `
-
-export const Logo = () => {
-    return(
-        <LogoContainer>
-            <SLogo preview={false} alt='logo' src={HLogo} />
-        </LogoContainer>
-    )
-}

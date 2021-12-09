@@ -10,6 +10,15 @@ interface ButtonProp {
     onClick: () => void ;
 }
 
+
+const CButton:FC<ButtonProp> = ({variant, title, onClick}) => {
+    return (
+        <CustomButton variant={variant} onClick={onClick}>
+            {title}
+        </CustomButton>
+    );
+}
+
 const CustomButton = styled(Button)<{variant: 'normal' | 'danger'}>`
     background: ${props => props.variant === 'normal'?'#6984FF':'#FE7474'};
     border-color: ${props => props.variant === 'normal'?'#6984FF':'#FE7474'};
@@ -24,13 +33,5 @@ const CustomButton = styled(Button)<{variant: 'normal' | 'danger'}>`
         color: ${props => props.variant === 'normal'?'#6984FF':'#FE7474'};
     }
 `
-
-const CButton:FC<any> = ({variant, title, onClick}) => {
-    return (
-        <CustomButton variant={variant} onClick={onClick}>
-            {title}
-        </CustomButton>
-    );
-}
 
 export default CButton

@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import LocalStorageService from "./services/LocalStorageServices";
 
 const Auth = () => {

@@ -23,7 +23,7 @@ const CreateRegionForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) =>
     const [form] = Form.useForm()
     useEffect(() => {
         if(visible) form.resetFields()
-    },[visible])
+    },[visible, form])
     return(
         <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Region Description</span>} placement='right'>
             <Form  form={form} layout='vertical' onFinish={onFinish}>

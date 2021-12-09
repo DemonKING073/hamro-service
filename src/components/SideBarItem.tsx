@@ -6,6 +6,17 @@ interface Props {
     onClick?: () => void;
     text: string;
 }
+
+
+const SidebarItem:FC<Props> = ({Icon, onClick, text}) => {
+    return(
+        <Container>
+            <div style={{marginLeft:10}}>{<Icon style={{ fontSize: 30}}  />}</div>
+            <Text style={{marginLeft:15}}>{text}</Text>
+        </Container>
+    )
+}
+
 const Container = styled.div`
     display: flex;
     align-items: center;
@@ -20,14 +31,5 @@ const Container = styled.div`
 const Text = styled.span`
     font-size: 18px;
 `
-
-const SidebarItem:FC<Props> = ({Icon, onClick, text}) => {
-    return(
-        <Container>
-            <div style={{marginLeft:10}}>{<Icon style={{ fontSize: 30}}  />}</div>
-            <Text style={{marginLeft:15}}>{text}</Text>
-        </Container>
-    )
-}
 
 export default SidebarItem

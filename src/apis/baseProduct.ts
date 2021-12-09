@@ -1,6 +1,5 @@
 import axiosInstance from "../axiosInstance";
 import BaseProduct from "../types/BaseProduct";
-import RegionProp from '../types/Region'
 
 type CreateBaseProductData = Omit<BaseProduct, 'id' | 'slug'>
 

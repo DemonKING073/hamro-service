@@ -13,6 +13,7 @@ import ApiError from "../../types/ApiError"
 import { useQuery, useMutation } from 'react-query'
 import NotificationService from "../../services/NotificationService"
 import { getRegion } from "../../apis/region"
+import axiosCheckError from "../../axiosCheckError"
 
 
 
@@ -23,21 +24,18 @@ const BaseProduct = () => {
     const [ addDrawer, setAddDrawer ] = useState(false)
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
 
-    const { isLoading: isRegionLoading, error, data: regionData, refetch: refetchBaseProducts } = useQuery('fetchRegion',getRegion,{
+    const { data: regionData,} = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            // console.log(regionData)
+            console.log(regionData)
             if(regionData) setCurrentRegion(regionData[0])
         },
         onError: (err) => {
-            if(axios.isAxiosError(err)) {
-                const apiError = err as ApiError
-                const message = apiError.response?.data.message
-                if (message) NotificationService.showNotification('error', message.toString())
-            }
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
 
-    const {data: baseProduct, isLoading: isBaseProductLoading} = useQuery(['fetchBaseProduct', currentRegion],() => {
+    const {data: baseProduct, isLoading: isBaseProductLoading, refetch: refetchBaseProducts } = useQuery(['fetchBaseProduct', currentRegion],() => {
         if(currentRegion) return getBaseProducts(currentRegion.id)
     }, {
         onError: (err) => {
@@ -52,6 +50,8 @@ const BaseProduct = () => {
 
     const { mutateAsync: mutateBaseProduct} = useMutation(createBaseProducts, {
         onSuccess: () => {
+            setAddDrawer(false)
+            NotificationService.showNotification('success','Sucessfully Added base product!')
             refetchBaseProducts()
         },
         onError: (err) => {
@@ -99,8 +99,8 @@ const BaseProduct = () => {
             key:'action',
             width:'25%',
             render: (value: number, record: BaseProductProps) => <TableButtonContainer> 
-            <CButton variant='normal' title='Update' />
-            <CButton variant='danger' title='Remove' />
+            <CButton variant='normal' onClick={()=> alert('kera kha')} title='Update' />
+            <CButton variant='danger' onClick={()=> alert('kera kha')} title='Remove' />
             </TableButtonContainer>
         }
     ]

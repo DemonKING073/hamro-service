@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Drawer, DrawerProps, Form, Input } from "antd";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import styled from "styled-components";
 import RegionProps from '../../../types/Region'
 
