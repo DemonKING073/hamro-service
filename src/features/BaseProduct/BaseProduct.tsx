@@ -15,6 +15,7 @@ import NotificationService from "../../services/NotificationService"
 import { getRegion } from "../../apis/region"
 import axiosCheckError from "../../axiosCheckError"
 
+type baseProductInputProp = Omit<BaseProductProps, 'id' | 'slug'>
 
 
 const { Option } = Select;
@@ -24,9 +25,8 @@ const BaseProduct = () => {
     const [ addDrawer, setAddDrawer ] = useState(false)
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
 
-    const { data: regionData,} = useQuery('fetchRegion',getRegion,{
+    const { data: regionData, refetch: refetchRegion} = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            console.log(regionData)
             if(regionData) setCurrentRegion(regionData[0])
         },
         onError: (err) => {
@@ -48,20 +48,19 @@ const BaseProduct = () => {
     })
 
 
-    const { mutateAsync: mutateBaseProduct} = useMutation(createBaseProducts, {
-        onSuccess: () => {
+    const { mutateAsync: mutateBaseProduct} = useMutation((values: baseProductInputProp) => createBaseProducts(values),{
+        onSuccess: (data) => {
+            NotificationService.showNotification('success','Base Product Successfully Added!')
             setAddDrawer(false)
-            NotificationService.showNotification('success','Sucessfully Added base product!')
             refetchBaseProducts()
         },
         onError: (err) => {
-            if(axios.isAxiosError(err)) {
-                const apiError = err as ApiError
-                const message = apiError.response?.data.message
-                if (message) NotificationService.showNotification('error', message.toString())
-            }
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
+      
+    
 
     const columns = [
         {
@@ -114,12 +113,11 @@ const BaseProduct = () => {
     }
     useEffect(() => {
         form.resetFields()
-    },[currentRegion])
+    },[currentRegion, form])
 
-    console.log(currentRegion)
     return(
         <MainTemplate>
-            <CreateBaseProductForm  visible={addDrawer} onFinish={mutateBaseProduct} onClose={()=>setAddDrawer(false)}  />
+            <CreateBaseProductForm visible={addDrawer} onFinish={mutateBaseProduct} onClose={()=>setAddDrawer(false)}  />
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
