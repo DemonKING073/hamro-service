@@ -19,10 +19,11 @@ import UpdateBaseProductForm from "./forms/UpdateBaseProductForm"
 type baseProductInputProp = Omit<BaseProductProps, 'id' | 'slug'>
 
 
-const { Option } = Select;
 
 
 const BaseProduct = () => {
+    
+    const { Option } = Select;
     const [ addDrawer, setAddDrawer ] = useState(false)
     const [ delModal, setDelModal ] = useState(false)
     const [ updateDrawer, setUpdateDrawer ] = useState(false)
@@ -166,8 +167,9 @@ const BaseProduct = () => {
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
                     <Form.Item
                         name='regionId'
+                        label='Region'
                     >
-                    <Select onChange={handleRegionChange} defaultValue={currentRegion?.id}>
+                    <Select onChange={handleRegionChange} >
                         {regionData?.map((item: RegionProps) => (
                             <Option key={item.id} value={item.id} >{item.name}</Option>
                         ))}
@@ -178,14 +180,14 @@ const BaseProduct = () => {
                 <Button  type='primary' onClick={()=> setAddDrawer(true)}  ><FileAddOutlined />Add Base Product</Button>
             </TopContainer>
             <MainContainer>
-                <Table loading={isBaseProductLoading} pagination={{pageSize:5}} columns={columns} dataSource={baseProduct} />
+                <Table loading={isBaseProductLoading} pagination={{pageSize:6}} columns={columns} dataSource={baseProduct} />
             </MainContainer>            
         </MainTemplate>
     )
 }
 
 const TopContainer = styled.div`
-    height: 80px;
+    padding: 16px;
     display: flex;
     justify-content: flex-end;
     align-items: center;

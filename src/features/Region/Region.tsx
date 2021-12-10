@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import MainTemplate from "../../components/MainTemplate";
-import { Button, Select, Input, Table, Modal } from 'antd'
+import { Button, Input, Table, Modal } from 'antd'
 import { FileAddOutlined, SearchOutlined } from '@ant-design/icons'
 import CButton from "../../components/CButton";
 import CreateRegionForm from "./Forms/CreateRegionForm";
@@ -11,9 +11,9 @@ import { useMutation, useQuery } from "react-query";
 import NotificationService from "../../services/NotificationService";
 import { addRegion, getRegion, removeRegion, updateRegion } from "../../apis/region";
 import axiosCheckError from "../../axiosCheckError";
+import { TopContainer } from "../../components/TopContainer";
 
 
-const { Option } = Select;
 
 type regionInputProp = Omit<RegionProps, 'id' | 'slug'>
 
@@ -129,24 +129,10 @@ const Region = () => {
                 }} 
             />
             <TopContainer>
-                <div>
+                <div style={{marginRight:15}}>
                 <Input prefix={<SearchOutlined/>} style={{borderRadius:20,height:35}} placeholder='Search...' />
                 </div>
-                <div>
-                    <Select defaultValue='alltime' style={{marginRight:20}} >
-                        <Option value='alltime'>All Time</Option>
-                        <Option value='15days'>15 Days</Option>
-                        <Option value='1month'>1 Month</Option>
-                        <Option value='6month'>6 Months</Option>
-                    </Select>
-                    <Select defaultValue='anyowner' style={{marginRight:20}} >
-                        <Option value='anyowner'>Any Owner</Option>
-                        <Option value='admin'>Admin</Option>
-                        <Option value='regionaladmin'>Regional Admin</Option>
-                        <Option value='superadmin'>Super Admin</Option>
-                    </Select>
-                    <Button onClick={() => setShowDrawer(true)} type='primary'  ><FileAddOutlined />Add Region</Button>
-                </div>
+                <Button onClick={() => setShowDrawer(true)} type='primary'  ><FileAddOutlined />Add Region</Button>
             </TopContainer>
             <TableContainer>
                 <Table  loading={isRegionLoading} pagination={{pageSize:5}} columns={columns} dataSource={regionDatas} />
@@ -155,12 +141,6 @@ const Region = () => {
     )
 }
 
-const TopContainer = styled.div`
-    display: flex;
-    padding: 15px;
-    justify-content: space-between;
-    align-items: center;
-`
 
 const TableContainer = styled.div`
     height: 55vh;
