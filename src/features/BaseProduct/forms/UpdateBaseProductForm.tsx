@@ -1,6 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Drawer, DrawerProps, Form, Input, notification, Select } from "antd";
-import axios from "axios";
+import { Button, Drawer, DrawerProps, Form, Input, Select } from "antd";
 import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
@@ -9,16 +8,17 @@ import { getRegion } from "../../../apis/region";
 import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
 import RegionProps from '../../../types/Region'
+import BaseProductProps from '../../../types/BaseProduct'
 
 const FormButton = styled(Button)`
     width: 100% ;
     margin-top: 18px;
 `
 type CustomDrawerProps = DrawerProps & {
-    // onFinish: (values: any)=> Promise<void>;
     onFinish: (value: any) => void;
     visible: boolean;
     onClose: ()=> void;
+    data: undefined | BaseProductProps |null;
 }
 
 interface CategoryProp {
@@ -31,120 +31,105 @@ interface CategoryProp {
 }
 
 const { Option } = Select;
-const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
+const UpdateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, data, onClose}) => {
     const [form] = Form.useForm()
-    const [ categoryData, setCategoryData ] = useState<CategoryProp[]>([])
-    const [ workingRegion, setWorkingRegion ] = useState<RegionProps>()
-    const [ workingCategory, setWorkingCategory ] = useState<CategoryProp | any>(categoryData[0])
-    const [ regionData, setRegionData ] = useState<RegionProps[]>([])
+    const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
+    const [ currentCategory, setCurrentCategory ] = useState<CategoryProp>()
 
-    const { isLoading: isRegionLoading, data: regionDatas, refetch: refetchRegion } = useQuery('fetchRegion',getRegion,{
-        onSuccess: (regionDatas) => {
-            setWorkingRegion(regionDatas[0])
+    const { data: regionData,} = useQuery('fetchRegion',getRegion,{
+        onSuccess: (regionData) => {
+            if(regionData) setCurrentRegion(regionData[0])
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
-    const {} = useQuery(['fetchCategory', workingRegion], () => {
-        if(workingRegion) getCategory(workingRegion.id)
-    },{
+
+
+    const { data: categoryData } = useQuery(['getCategory', currentRegion], () => {
+        if(currentRegion) return getCategory(currentRegion.id)
+    }, {
+        onSuccess: (categoryData) => {
+            if(categoryData) setCurrentCategory(categoryData[0])
+        },
         onError: (err) => {
             const apiError = axiosCheckError(err)
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
 
-
-    const fetchCategory = async() => {
-       try{
-        const res = await axios.get('http://localhost:8080/category',{
-            headers:{
-                'regionId':`${workingRegion?workingRegion.id:1}`
-            }
-        })
-        setCategoryData(res.data)
-        setWorkingCategory(res.data[0])
-       }
-       catch(err: any){
-        console.log(err.response.data)
-        notification.error({message:err.response.data.message})
-       }
+    const handleWorkingRegion = ( id: any ) => {
+        if(regionData){
+            const newWorkingRegion = regionData.find((item:RegionProps) => item.id === id )
+            setCurrentRegion(newWorkingRegion)
+        }
     }
-    useEffect(() => {
-        if(workingRegion) fetchCategory()
-        form.resetFields()
-    },[workingRegion])
 
-    useEffect(()=> {
-        if(workingCategory) form.resetFields()
-    },[workingCategory])
-   
-    const fetchRegions = async () => {
-        axios.get('http://localhost:8080/region')
-        .then((res) => {
-            setRegionData(res.data)
-            setWorkingRegion(res.data[0])
-        })
-        .catch((err) => console.log(err))
+
+    const handleCategory = ( id: any) => {
+        if(categoryData){
+            const newCategory = categoryData.find((item) => item.id === id)
+            setCurrentCategory(newCategory)
+        }
+        
     }
     useEffect(() => {
         if(visible) form.resetFields()
-        fetchRegions()
-        fetchCategory()
-    },[visible])
-    
-    
-    const handleWorkingRegion = ( id: any ) => {
-        const newWorkingRegion = regionData.find((item:RegionProps) => item.id === id )
-        setWorkingRegion(newWorkingRegion)
-    }
-    const handleCategory = ( id: any) => {
-        const newCategory = categoryData.find((item) => item.id === id)
-        setWorkingCategory(newCategory)
-    }
+    }, [visible, form])
     return(
-        <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Base Product</span>} placement='right'>
-            <Form form={form} initialValues={{name:'', regionId: workingRegion?.id,categoryId:workingCategory?.id}}  layout='vertical' onFinish={onFinish}>
-                    <Form.Item
-                        label='Select Region'
-                        name='regionId'
-                    >
-                        <Select value={workingRegion?.name}  onChange={handleWorkingRegion}>
-                            {regionData.map((item: RegionProps) => (
-                                <Option key={item.id} value={item.id} >{item.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item 
-                        label='Select Category' 
-                        name='categoryId'
-                    >
-                        <Select value={workingCategory?.name} onChange={handleCategory} >
-                            {categoryData.map((item:CategoryProp) => (
-                                <Option key={item.id} value={item.id}>{item.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item 
-                        label='Name' 
-                        name='name'
-                        rules={[
-                            {
-                              required: true,
-                              message: 'Please input Base Product Name!',
-                            },
-                          ]}
-                    >
-                        <Input type='text' />
-                    </Form.Item>
-                    <Form.Item>
-                        <FormButton htmlType='submit' size='large' type='primary'>Submit</FormButton>
-                    </Form.Item>
-                </Form>
+        <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Update Base Product</span>} placement='right'>
+            <Form form={form} initialValues={{name: data?.name, regionId: data?.regionId,categoryId: data?.categoryId, slug: data?.slug}}  layout='vertical' onFinish={onFinish}>
+                <Form.Item
+                    label='Select Region'
+                    name='regionId'
+                >
+                    <Select value={currentRegion?.name}  onChange={handleWorkingRegion}>
+                        {regionData?.map((item: RegionProps) => (
+                            <Option key={item.id} value={item.id} >{item.name}</Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item 
+                    label='Select Category' 
+                    name='categoryId'
+                >
+                    <Select value={currentCategory?.name} onChange={handleCategory} >
+                        {categoryData?.map((item:CategoryProp) => (
+                            <Option key={item.id} value={item.id}>{item.name}</Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item 
+                    label='Name' 
+                    name='name'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input Base Product Name!',
+                        },
+                        ]}
+                >
+                    <Input type='text' />
+                </Form.Item>
+                <Form.Item 
+                    label='Slug' 
+                    name='slug'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input Base Slug Name!',
+                        },
+                        ]}
+                >
+                    <Input type='text' />
+                </Form.Item>
+                <Form.Item>
+                    <FormButton htmlType='submit' size='large' type='primary'>Submit</FormButton>
+                </Form.Item>
+            </Form>
         </Drawer>
     )
 }
 
-export default CreateBaseProductForm
+export default UpdateBaseProductForm

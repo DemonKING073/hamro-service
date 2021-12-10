@@ -1,6 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Drawer, DrawerProps, Form, Input, notification, Select } from "antd";
-import axios from "axios";
+import { Button, Drawer, DrawerProps, Form, Input, Select } from "antd";
 import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
@@ -10,12 +9,8 @@ import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
 import RegionProps from '../../../types/Region'
 
-const FormButton = styled(Button)`
-    width: 100% ;
-    margin-top: 18px;
-`
+
 type CustomDrawerProps = DrawerProps & {
-    // onFinish: (values: any)=> Promise<void>;
     onFinish: (value: any) => void;
     visible: boolean;
     onClose: ()=> void;
@@ -35,6 +30,8 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
     const [form] = Form.useForm()
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
     const [ currentCategory, setCurrentCategory ] = useState<CategoryProp>()
+
+
     const { data: regionData,} = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
             if(regionData) setCurrentRegion(regionData[0])
@@ -44,6 +41,8 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
+
+
     const { data: categoryData } = useQuery(['getCategory', currentRegion], () => {
         if(currentRegion) return getCategory(currentRegion.id)
     }, {
@@ -55,12 +54,16 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
+
+
     const handleWorkingRegion = ( id: any ) => {
         if(regionData){
             const newWorkingRegion = regionData.find((item:RegionProps) => item.id === id )
             setCurrentRegion(newWorkingRegion)
         }
     }
+
+
     const handleCategory = ( id: any) => {
         if(categoryData){
             const newCategory = categoryData.find((item) => item.id === id)
@@ -68,6 +71,8 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
         }
         
     }
+
+
     useEffect(() => {
         form.resetFields()
     },[currentCategory, form])
@@ -114,5 +119,10 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
         </Drawer>
     )
 }
+
+const FormButton = styled(Button)`
+    width: 100% ;
+    margin-top: 18px;
+`
 
 export default CreateBaseProductForm

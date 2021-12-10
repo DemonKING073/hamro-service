@@ -22,7 +22,7 @@ const UpdateRegionForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose, mer
 
     useEffect(() => {
         if(visible) form.resetFields()
-    }, [visible])
+    }, [visible, form])
     return(
         <Drawer visible={visible} onClose={onClose} closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Update Description</span>} placement='right'>
             <Form initialValues={{name:meroData?.name,lng:meroData?.location.lng,lat:meroData?.location.lat}} form={form} layout='vertical' onFinish={onFinish}>
