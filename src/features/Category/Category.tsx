@@ -1,9 +1,9 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Form, Image, Select, Table } from "antd";
+import { Button, Form, Image, Modal, Select, Table } from "antd";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import { getCategory } from "../../apis/category";
+import { deleteCategory, getCategory } from "../../apis/category";
 import { getRegion } from "../../apis/region";
 import axiosCheckError from "../../axiosCheckError";
 import MainTemplate from "../../components/MainTemplate";
@@ -17,6 +17,7 @@ import CreateSubCategoryForm from "./forms/CreateSubCategoryForm";
 import UpdateCategoryForm from "./forms/UpdateCategoryForm";
 
 const Category = () => {
+    const [ delModal, setDelModal ] = useState<boolean>(false)
     const [ addCategoryDrawer, setAddCategoryDrawer ] = useState<boolean>(false)
     const [ updateCategoryDrawer, setUpdateCategoryDrawer ] = useState<boolean>(false)
     const [ addSubCategoryDrawer, setAddSubCategoryDrawer ] = useState<boolean>(false)
@@ -102,7 +103,7 @@ const Category = () => {
             render: (id: number, record: CategoryProp) =>
             <TableButtonContainer> 
                 <CButton onClick={()=>{ setUpdateCategoryDrawer(true); setCurrentCategory(record) }} variant='normal' title='Update' />
-                <CButton onClick={()=>alert('kera')} variant='danger'  title='Remove' />
+                <CButton onClick={()=> { setDelModal(true); setCurrentCategory(record)}} variant='danger'  title='Remove' />
             </TableButtonContainer>
 
         }
@@ -117,8 +118,23 @@ const Category = () => {
         console.log(val)
     }
 
+    const { mutateAsync: removeCategory } = useMutation('removeCategory',deleteCategory,{
+        onSuccess:() => {
+            setDelModal(false)
+            reFetchCategory()
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
+            setDelModal(false)
+        }
+    })
+
     return(
         <MainTemplate>
+            <Modal  visible={delModal} okText='Remove' onOk={() => removeCategory(currentCategory?.id)} onCancel={() => setDelModal(false)}>
+                Confirm your delete request!
+            </Modal>
             <CreateCategoryForm onFinish={submitCategory} visible={addCategoryDrawer} onClose={()=> setAddCategoryDrawer(false)} />
             <CreateSubCategoryForm visible={addSubCategoryDrawer} onClose={()=> setAddSubCategoryDrawer(false)} onFinish={submitUpdateCategory} />
             <UpdateCategoryForm visible={updateCategoryDrawer} onClose={()=> setUpdateCategoryDrawer(false)} onFinish={submitUpdatedCategory} data={currentCategory} />
