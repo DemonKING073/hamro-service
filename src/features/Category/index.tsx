@@ -1,3 +1,3 @@
-import CategoryProduct from "./CategoryProduct";
+import CategoryProduct from "./Category";
 
 export default CategoryProduct

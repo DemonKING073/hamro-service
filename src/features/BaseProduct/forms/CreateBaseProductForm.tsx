@@ -3,7 +3,7 @@ import { Button, Drawer, DrawerProps, Form, Input, Select } from "antd";
 import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getCategory } from "../../../apis/baseProduct";
+import { getCategory } from "../../../apis/category";
 import { getRegion } from "../../../apis/region";
 import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
@@ -46,7 +46,7 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
     const { data: categoryData } = useQuery(['getCategory', currentRegion], () => {
         if(currentRegion) return getCategory(currentRegion.id)
     }, {
-        onSuccess: (categoryData) => {
+        onSuccess: (categoryData: CategoryProp[]) => {
             if(categoryData) setCurrentCategory(categoryData[0])
         },
         onError: (err) => {
@@ -64,9 +64,9 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
     }
 
 
-    const handleCategory = ( id: any) => {
+    const handleCategory = ( id: number |string | undefined) => {
         if(categoryData){
-            const newCategory = categoryData.find((item) => item.id === id)
+            const newCategory = categoryData.find((item: CategoryProp) => item.id === id)
             setCurrentCategory(newCategory)
         }
         

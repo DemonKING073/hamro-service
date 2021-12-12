@@ -100,7 +100,7 @@ const BaseProduct = () => {
     const columns = [
         {
             title: 'Id',
-            dataIndex: 'id',
+            dataIndex: 'id',    
             key: 'id',
             width:'5%'
         },
