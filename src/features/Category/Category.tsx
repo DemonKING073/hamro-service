@@ -13,9 +13,14 @@ import RegionProps from '../../types/Region'
 import CategoryProp from '../../types/Category'
 import CButton from "../../components/CButton";
 import CreateCategoryForm from "./forms/CreateCategoryForm";
+import CreateSubCategoryForm from "./forms/CreateSubCategoryForm";
+import UpdateCategoryForm from "./forms/UpdateCategoryForm";
 
-const CategoryProduct = () => {
+const Category = () => {
     const [ addCategoryDrawer, setAddCategoryDrawer ] = useState<boolean>(false)
+    const [ updateCategoryDrawer, setUpdateCategoryDrawer ] = useState<boolean>(false)
+    const [ addSubCategoryDrawer, setAddSubCategoryDrawer ] = useState<boolean>(false)
+    const [ currentCategory, setCurrentCategory ] = useState<CategoryProp>()
     const [form] = Form.useForm()
     const { Option } = Select;
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
@@ -33,8 +38,8 @@ const CategoryProduct = () => {
     const { data: categoryData, isLoading: isCategoryDataLoading, refetch: reFetchCategory } = useQuery(['getCategory', currentRegion], () => {
         if(currentRegion) return getCategory(currentRegion.id)
     }, {
-        onSuccess: () => {
-
+        onSuccess: (categoryData: CategoryProp[]) => {
+            if(categoryData) setCurrentCategory(categoryData[0])
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
@@ -96,19 +101,27 @@ const CategoryProduct = () => {
             width:'25%',
             render: (id: number, record: CategoryProp) =>
             <TableButtonContainer> 
-                <CButton onClick={()=>alert('kera')} variant='normal' title='Update' />
+                <CButton onClick={()=>{ setUpdateCategoryDrawer(true); setCurrentCategory(record) }} variant='normal' title='Update' />
                 <CButton onClick={()=>alert('kera')} variant='danger'  title='Remove' />
             </TableButtonContainer>
 
         }
     ]
-    const submitProduct = (val: any) => {
+    const submitCategory = (val: any) => {
+        console.log(val)
+    }
+    const submitUpdateCategory = (val: any) => {
+        console.log(val)
+    }
+    const submitUpdatedCategory = (val: any) => {
         console.log(val)
     }
 
     return(
         <MainTemplate>
-            <CreateCategoryForm onFinish={submitProduct} visible={addCategoryDrawer} onClose={()=> setAddCategoryDrawer(false)} />
+            <CreateCategoryForm onFinish={submitCategory} visible={addCategoryDrawer} onClose={()=> setAddCategoryDrawer(false)} />
+            <CreateSubCategoryForm visible={addSubCategoryDrawer} onClose={()=> setAddSubCategoryDrawer(false)} onFinish={submitUpdateCategory} />
+            <UpdateCategoryForm visible={updateCategoryDrawer} onClose={()=> setUpdateCategoryDrawer(false)} onFinish={submitUpdatedCategory} data={currentCategory} />
             <TopContainer>
             <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
@@ -124,7 +137,7 @@ const CategoryProduct = () => {
                     </Form.Item>
                     </Form>
                 </OptionContainer>
-                <Button style={{marginRight:15}} type='primary' ><FileAddOutlined />Add Sub-Category</Button>
+                <Button style={{marginRight:15}} type='primary' onClick={()=> setAddSubCategoryDrawer(true)} ><FileAddOutlined />Add Sub-Category</Button>
                 <Button  type='primary' onClick={()=> setAddCategoryDrawer(true)} ><FileAddOutlined />Add Category</Button>
             </TopContainer>
             <MainContainer>
@@ -150,4 +163,4 @@ const TableButtonContainer = styled.div`
     display: flex;
     justify-content: space-around;
 `
-export default CategoryProduct
+export default Category

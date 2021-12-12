@@ -157,7 +157,7 @@ const BaseProduct = () => {
                 Confirm your delete request!
             </Modal>
             <CreateBaseProductForm visible={addDrawer} onFinish={mutateBaseProduct} onClose={()=>setAddDrawer(false)}  />
-            <UpdateBaseProductForm data={workingBaseProduct } visible={updateDrawer} onClose={()=>setUpdateDrawer(false)} onFinish={(values)=> {
+            <UpdateBaseProductForm data={workingBaseProduct} visible={updateDrawer} onClose={()=>setUpdateDrawer(false)} onFinish={(values)=> {
                 if(workingBaseProduct) PutBaseProduct(values)
                 console.log(values)
                 console.log(workingBaseProduct?.id)

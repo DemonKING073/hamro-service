@@ -8,17 +8,19 @@ import { getRegion } from "../../../apis/region";
 import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
 import RegionProps from '../../../types/Region'
+import CategoryProp from '../../../types/Category'
 
 
 type CustomDrawerProps = DrawerProps & {
     onFinish: (value: any) => void;
     visible: boolean;
     onClose: ()=> void;
+    data: CategoryProp | undefined;
 }
 
 
 const { Option } = Select;
-const CreateCategoryForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
+const UpdateCategoryForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose, data}) => {
     const [form] = Form.useForm()
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
 
@@ -56,7 +58,7 @@ const CreateCategoryForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) 
                     <Input type='text' />
                 </Form.Item>
                 <Form.Item
-                    label='Region'
+                    label='Region '
                     name='regionId'
                 >
                     <Select value={currentRegion?.name}  onChange={handleWorkingRegion}>
@@ -78,4 +80,4 @@ const FormButton = styled(Button)`
     margin-top: 18px;
 `
 
-export default CreateCategoryForm
+export default UpdateCategoryForm

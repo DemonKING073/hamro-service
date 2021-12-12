@@ -18,13 +18,11 @@ type CustomDrawerProps = DrawerProps & {
 }
 
 
-
 const { Option } = Select;
-const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
+const AddSubCategory:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
     const [form] = Form.useForm()
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
     const [ currentCategory, setCurrentCategory ] = useState<CategoryProp>()
-
 
     const { data: regionData,} = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
@@ -35,8 +33,6 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
-
-
     const { data: categoryData } = useQuery(['getCategory', currentRegion], () => {
         if(currentRegion) return getCategory(currentRegion.id)
     }, {
@@ -49,14 +45,12 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
         }
     })
 
-
     const handleWorkingRegion = ( id: any ) => {
         if(regionData){
             const newWorkingRegion = regionData.find((item:RegionProps) => item.id === id )
             setCurrentRegion(newWorkingRegion)
         }
     }
-
 
     const handleCategory = ( id: number |string | undefined) => {
         if(categoryData){
@@ -65,27 +59,38 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
         }
     }
 
-
-    useEffect(() => {
+    useEffect(()=> {
         form.resetFields()
-    },[currentCategory, form])
+    },[currentCategory,form])
 
     return(
-        <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Base Product</span>} placement='right'>
-            <Form form={form} initialValues={{name:'', regionId: currentRegion?.id,categoryId: currentCategory?.id}}  layout='vertical' onFinish={onFinish}>
-                    <Form.Item
-                        label='Select Region'
-                        name='regionId'
-                    >
-                        <Select value={currentRegion?.name}  onChange={handleWorkingRegion}>
-                            {regionData?.map((item: RegionProps) => (
-                                <Option key={item.id} value={item.id} >{item.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item 
-                        label='Select Category' 
-                        name='categoryId'
+        <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Sub-Category</span>} placement='right'>
+            <Form form={form} onFinish={onFinish} initialValues={{name:'', regionId: currentRegion?.id, parentCategoryId: currentCategory?.name}} layout='vertical'>
+                <Form.Item
+                    label='Name'
+                    name='name'
+                    rules={[
+                        {
+                          required: true,
+                          message: 'Please input Base Product Name!',
+                        },
+                      ]}
+                >
+                    <Input type='text' />
+                </Form.Item>
+                <Form.Item
+                    label='Region'
+                    name='regionId'
+                >
+                    <Select value={currentRegion?.name}  onChange={handleWorkingRegion}>
+                        {regionData?.map((item: RegionProps) => (
+                            <Option key={item.id} value={item.id} >{item.name}</Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item 
+                        label='Select Parent Category' 
+                        name='parentCategoryId'
                     >
                         <Select value={currentCategory?.name} onChange={handleCategory} >
                             {categoryData?.map((item:CategoryProp) => (
@@ -93,22 +98,10 @@ const CreateBaseProductForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item 
-                        label='Name' 
-                        name='name'
-                        rules={[
-                            {
-                              required: true,
-                              message: 'Please input Base Product Name!',
-                            },
-                          ]}
-                    >
-                        <Input type='text' />
-                    </Form.Item>
-                    <Form.Item>
-                        <FormButton htmlType='submit' size='large' type='primary'>Submit</FormButton>
-                    </Form.Item>
-                </Form>
+                <Form.Item>
+                    <FormButton htmlType='submit' size='large' type='primary'>Submit</FormButton>
+                </Form.Item>
+            </Form>
         </Drawer>
     )
 }
@@ -118,4 +111,4 @@ const FormButton = styled(Button)`
     margin-top: 18px;
 `
 
-export default CreateBaseProductForm
+export default AddSubCategory
