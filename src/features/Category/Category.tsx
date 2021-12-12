@@ -12,9 +12,10 @@ import NotificationService from "../../services/NotificationService";
 import RegionProps from '../../types/Region'
 import CategoryProp from '../../types/Category'
 import CButton from "../../components/CButton";
+import CreateCategoryForm from "./forms/CreateCategoryForm";
 
 const CategoryProduct = () => {
-
+    const [ addCategoryDrawer, setAddCategoryDrawer ] = useState<boolean>(false)
     const [form] = Form.useForm()
     const { Option } = Select;
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
@@ -101,10 +102,13 @@ const CategoryProduct = () => {
 
         }
     ]
-    console.log(categoryData)
+    const submitProduct = (val: any) => {
+        console.log(val)
+    }
 
     return(
         <MainTemplate>
+            <CreateCategoryForm onFinish={submitProduct} visible={addCategoryDrawer} onClose={()=> setAddCategoryDrawer(false)} />
             <TopContainer>
             <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
@@ -120,7 +124,8 @@ const CategoryProduct = () => {
                     </Form.Item>
                     </Form>
                 </OptionContainer>
-                <Button  type='primary'   ><FileAddOutlined />Add Category</Button>
+                <Button style={{marginRight:15}} type='primary' ><FileAddOutlined />Add Sub-Category</Button>
+                <Button  type='primary' onClick={()=> setAddCategoryDrawer(true)} ><FileAddOutlined />Add Category</Button>
             </TopContainer>
             <MainContainer>
                 <Table pagination={{pageSize:4}}  loading={isCategoryDataLoading} dataSource={categoryData} columns={columns} />
