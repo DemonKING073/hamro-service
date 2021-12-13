@@ -16,12 +16,14 @@ import axiosCheckError from "../../axiosCheckError"
 import CreateVendorForms from "./forms/CreateVendorForms"
 import { DeleteVendor, GetVendor } from "../../apis/vendor"
 import VendorProps from '../../types/Vendor'
+import UpdateVendorForms from "./forms/UpdateVendorForms"
 
 
 
 const Vendor = () => {
 
     const [ addVendorDrawer, setAddVendorDrawer ] = useState<boolean>(false)
+    const [ updateVendorDrawer, setUpdateVendorDrawer ] = useState<boolean>(false)
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
     const [ currentVendor, setCurrentVendor ] = useState<VendorProps>()
     const [ delModal, setDelModal ] = useState<boolean>(false)
@@ -112,7 +114,7 @@ const Vendor = () => {
             key:'action',
             width:'25%',
             render: (value: number, record: any) => <TableButtonContainer> 
-            <CButton variant='normal' onClick={()=> alert('fuck you')} title='Update' />
+            <CButton variant='normal' onClick={()=> {setUpdateVendorDrawer(true); setCurrentVendor(record)}} title='Update' />
             <CButton variant='danger' onClick={()=> {setDelModal(true); setCurrentVendor(record)}} title='Remove' />
             </TableButtonContainer>
         }
@@ -132,6 +134,14 @@ const Vendor = () => {
                 Confirm your delete request!
             </Modal>
             <CreateVendorForms visible={addVendorDrawer} onFinish={addVendor} onClose={()=> setAddVendorDrawer(false)} />
+            <UpdateVendorForms 
+                data={currentVendor}
+                visible={updateVendorDrawer}
+                onClose={()=> setUpdateVendorDrawer(false)}
+                onFinish={(values)=>{
+                    if(currentVendor) console.log(values)
+                } }
+            />
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
