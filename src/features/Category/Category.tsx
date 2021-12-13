@@ -1,9 +1,9 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Form, Image, Modal, Select, Table } from "antd";
+import { Button, Checkbox, Form, Image, Modal, Select, Table, CheckboxProps } from "antd";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import { deleteCategory, getCategory } from "../../apis/category";
+import { deleteCategory, fetchCategoryWithAllProducts, getCategory } from "../../apis/category";
 import { getRegion } from "../../apis/region";
 import axiosCheckError from "../../axiosCheckError";
 import MainTemplate from "../../components/MainTemplate";
@@ -18,6 +18,7 @@ import UpdateCategoryForm from "./forms/UpdateCategoryForm";
 
 const Category = () => {
     const [ delModal, setDelModal ] = useState<boolean>(false)
+    const [ getCategoryWithProduct, setGetCategoryWithProduct ] = useState<boolean>(false)
     const [ addCategoryDrawer, setAddCategoryDrawer ] = useState<boolean>(false)
     const [ updateCategoryDrawer, setUpdateCategoryDrawer ] = useState<boolean>(false)
     const [ addSubCategoryDrawer, setAddSubCategoryDrawer ] = useState<boolean>(false)
@@ -36,8 +37,9 @@ const Category = () => {
         }
     })
 
-    const { data: categoryData, isLoading: isCategoryDataLoading, refetch: reFetchCategory } = useQuery(['getCategory', currentRegion], () => {
-        if(currentRegion) return getCategory(currentRegion.id)
+    const { data: categoryData, isLoading: isCategoryDataLoading, refetch: reFetchCategory } = useQuery(['getCategory', currentRegion,getCategoryWithProduct], () => {
+        if(currentRegion && !getCategoryWithProduct) return getCategory(currentRegion.id)
+        else if(currentRegion && getCategoryWithProduct) return fetchCategoryWithAllProducts(currentRegion.id)
     }, {
         onSuccess: (categoryData: CategoryProp[]) => {
             if(categoryData) setCurrentCategory(categoryData[0])
@@ -47,6 +49,7 @@ const Category = () => {
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
+
 
     const handleRegionChange = (value: any) => {
         const newRegion = regionData?.find((item) => item.id === value)
@@ -130,6 +133,11 @@ const Category = () => {
         }
     })
 
+    const toogleCWP = (e: any) => {
+        console.log(e.target.checked)
+        setGetCategoryWithProduct(e.target.checked)
+    }
+
     return(
         <MainTemplate>
             <Modal  visible={delModal} okText='Remove' onOk={() => removeCategory(currentCategory?.id)} onCancel={() => setDelModal(false)}>
@@ -139,11 +147,11 @@ const Category = () => {
             <CreateSubCategoryForm visible={addSubCategoryDrawer} onClose={()=> setAddSubCategoryDrawer(false)} onFinish={submitUpdateCategory} />
             <UpdateCategoryForm visible={updateCategoryDrawer} onClose={()=> setUpdateCategoryDrawer(false)} onFinish={submitUpdatedCategory} data={currentCategory} />
             <TopContainer>
+            <Checkbox onChange={toogleCWP} style={{alignSelf:'auto'}}>Categories with Products</Checkbox>
             <OptionContainer>
-                    <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
+                <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
                     <Form.Item
                         name='regionId'
-                        label='Region'
                     >
                     <Select onChange={handleRegionChange} >
                         {regionData?.map((item: RegionProps) => (
@@ -151,8 +159,8 @@ const Category = () => {
                         ))}
                     </Select>
                     </Form.Item>
-                    </Form>
-                </OptionContainer>
+                </Form>
+            </OptionContainer>
                 <Button style={{marginRight:15}} type='primary' onClick={()=> setAddSubCategoryDrawer(true)} ><FileAddOutlined />Add Sub-Category</Button>
                 <Button  type='primary' onClick={()=> setAddCategoryDrawer(true)} ><FileAddOutlined />Add Category</Button>
             </TopContainer>
