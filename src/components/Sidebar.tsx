@@ -4,7 +4,7 @@ import { Logo } from "./Logo";
 // import Avatar from '../assets/user.png'
 import { NavLink } from 'react-router-dom'
 import SidebarItem from "./SideBarItem";
-import { AreaChartOutlined, InboxOutlined, CarOutlined, GlobalOutlined, TableOutlined } from '@ant-design/icons'
+import { AreaChartOutlined, InboxOutlined, CarOutlined, GlobalOutlined, TableOutlined, HomeOutlined } from '@ant-design/icons'
 
 
 
@@ -26,6 +26,9 @@ export const Sidebar = () => {
                 </NavLink>
                 <NavLink to='/category'  >
                     <SidebarItem Icon={TableOutlined} text='Category' />
+                </NavLink>
+                <NavLink to='/vendor'  >
+                    <SidebarItem Icon={HomeOutlined} text='Vendor' />
                 </NavLink>
                 <NavLink to='/orders'  >
                     <SidebarItem Icon={CarOutlined} text='Orders' />
