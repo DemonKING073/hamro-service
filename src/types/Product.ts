@@ -1,5 +1,6 @@
 
 interface ProductProps {
+    id: number;
     name: string;
     description: string;
     popular: boolean;

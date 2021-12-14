@@ -1,19 +1,23 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Select, Table, Tooltip } from "antd";
+import { Button, Checkbox, Form, Modal, Select, Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import { getProducts, getProductsFeatured, getProductsPopular } from "../../apis/product";
+import { deleteProduct, getProducts, getProductsFeatured, getProductsPopular } from "../../apis/product";
 import { getRegion } from "../../apis/region";
 import axiosCheckError from "../../axiosCheckError";
+import CButton from "../../components/CButton";
 import MainTemplate from "../../components/MainTemplate";
 import { TopContainer } from "../../components/TopContainer";
 import NotificationService from "../../services/NotificationService";
+import ProductProps from "../../types/Product";
 import RegionProps from '../../types/Region'
 
 
 const Product = () => {
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()    
+    const [ currentProduct, setCurrentProduct ] = useState<ProductProps>()
+    const [ delModal, setDelModal ] = useState<boolean>(false)
     const { Option } = Select;
     const [form] = Form.useForm()
     const [ toogleFeatured, setToogleFeatured ] = useState<boolean>(false)
@@ -28,15 +32,34 @@ const Product = () => {
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
-    console.log('yo chai featured', toogleFeatured)
-    console.log('yo chai polular', tooglePopolar)
-
 
     const { data:productsData, isLoading: isProductLoading, refetch: refetchProducts } = useQuery(['fetchProduct', currentRegion, toogleFeatured, tooglePopolar], () => {
         if( currentRegion && !toogleFeatured && !tooglePopolar) return getProducts(currentRegion.id)
         else if( currentRegion && toogleFeatured && !tooglePopolar ) return getProductsFeatured(currentRegion.id)
         else if( currentRegion && !toogleFeatured && !tooglePopolar ) return getProductsPopular(currentRegion.id)
+    },{
+        onSuccess: (data: ProductProps[]) => {
+            if(data) setCurrentProduct(data[0])
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
+        }
     })
+
+    const { mutateAsync: removeProduct } = useMutation((id: number | undefined) => deleteProduct(id),{
+        onSuccess: () => {
+            NotificationService.showNotification('success','Successfully deleted!');
+            refetchProducts()
+            setDelModal(false)
+        },
+        onError: (err) => {
+            const apiError = axiosCheckError(err)
+            if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
+        }
+    })
+
+    
     
     const columns = [
         {
@@ -117,6 +140,10 @@ const Product = () => {
             title: 'Actions',
             key:'action',
             width:'25%',
+            render: (value: number, record: ProductProps) => <TableButtonContainer> 
+            <CButton variant='normal' onClick={()=> alert('fck you')} title='Update' />
+            <CButton variant='danger' onClick={() => { setDelModal(true); setCurrentProduct(record)}} title='Remove' />
+            </TableButtonContainer>
         }
     ]
     
@@ -138,6 +165,9 @@ const Product = () => {
     }
     return(
         <MainTemplate>
+            <Modal  visible={delModal} okText='Remove' onOk={() => removeProduct(currentProduct?.id)} onCancel={() => setDelModal(false)}>
+                Confirm your delete request!
+            </Modal>
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
@@ -158,7 +188,7 @@ const Product = () => {
                 <Button  type='primary' onClick={()=> alert('kera')}  ><FileAddOutlined />Add Product</Button>
             </TopContainer>
             <MainContainer>
-                <Table  pagination={{pageSize:6,showQuickJumper:false,showSizeChanger:false}} columns={columns} dataSource={productsData} />
+                <Table loading={isProductLoading} pagination={{pageSize:5,showSizeChanger:false}} columns={columns} dataSource={productsData} />
             </MainContainer>
         </MainTemplate>
     )
@@ -171,6 +201,10 @@ const OptionContainer = styled.div`
 const MainContainer = styled.div`
     height: 73vh;
     width: 100%;
+`
+const TableButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
 `
 
 export default Product
