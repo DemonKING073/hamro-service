@@ -1,5 +1,5 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Select, Table } from "antd";
+import { Button, Checkbox, Form, Select, Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
@@ -21,7 +21,7 @@ const Product = () => {
 
     const { data: regionData } = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            if(regionData) setCurrentRegion(regionData[0])
+            if(regionData) setCurrentRegion(regionData[1])
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
@@ -40,34 +40,60 @@ const Product = () => {
     
     const columns = [
         {
-            title: 'Id',
-            dataIndex: 'id',    
-            key: 'id',
-            width:'2%'
-        },
-        {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            width:'15%'
+            width:'15%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (name: string) => (
+                <Tooltip placement='topLeft' title={name}>
+                    {name}
+                </Tooltip>
+            )
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
-            width:'15%'
+            width:'15%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (description:string) => (
+                <Tooltip placement='topLeft' title={description}>
+                    {description}
+                </Tooltip>
+            )
         },
         {
             title: 'Keywords',
             dataIndex: 'keywords',
             key: 'keywords',
-            width:'10%'
+            width:'10%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (keywords:string) => (
+                <Tooltip placement='topLeft' title={keywords}>
+                    {keywords}
+                </Tooltip>
+            )
         },
         {
             title: 'Unit',
             dataIndex: 'unit',
             key: 'unit',
-            width:'10%'
+            width:'10%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (unit:string) => (
+                <Tooltip placement='topLeft' title={unit}>
+                    {unit}
+                </Tooltip>
+            )
         },
         {
             title: 'Price',
@@ -132,7 +158,7 @@ const Product = () => {
                 <Button  type='primary' onClick={()=> alert('kera')}  ><FileAddOutlined />Add Product</Button>
             </TopContainer>
             <MainContainer>
-                <Table pagination={{pageSize:2}} columns={columns} dataSource={productsData} />
+                <Table  pagination={{pageSize:6,showQuickJumper:false,showSizeChanger:false}} columns={columns} dataSource={productsData} />
             </MainContainer>
         </MainTemplate>
     )
