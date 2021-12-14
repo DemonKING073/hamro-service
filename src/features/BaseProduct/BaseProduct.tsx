@@ -93,10 +93,6 @@ const BaseProduct = () => {
         }
     })
 
-    
-      
-    
-
     const columns = [
         {
             title: 'Id',

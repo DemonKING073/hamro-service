@@ -48,7 +48,7 @@ const UpdateVendorForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose, da
             setCurrentRegion(regionData[0])
         }
         form.resetFields()
-    },[visible, form])
+    },[visible, form, regionData])
 
     return(
         <Drawer 

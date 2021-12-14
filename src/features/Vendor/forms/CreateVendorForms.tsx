@@ -46,7 +46,7 @@ const CreateVendorForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) =
             setCurrentRegion(regionData[0])
         }
         form.resetFields()
-    },[visible, form])
+    },[visible, form, regionData])
 
     return(
         <Drawer 
