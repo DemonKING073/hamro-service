@@ -12,11 +12,13 @@ import { TopContainer } from "../../components/TopContainer";
 import NotificationService from "../../services/NotificationService";
 import ProductProps from "../../types/Product";
 import RegionProps from '../../types/Region'
+import CreateProductForms from "./forms/CreateProductForms";
 
 
 const Product = () => {
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()    
     const [ currentProduct, setCurrentProduct ] = useState<ProductProps>()
+    const [ addProductDrawer, setAddProductDrawer ] = useState<boolean>(false)
     const [ delModal, setDelModal ] = useState<boolean>(false)
     const { Option } = Select;
     const [form] = Form.useForm()
@@ -168,6 +170,7 @@ const Product = () => {
             <Modal  visible={delModal} okText='Remove' onOk={() => removeProduct(currentProduct?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
+            <CreateProductForms onFinish={()=> alert('kera')} visible={addProductDrawer} onClose={()=>setAddProductDrawer(false)} />
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
@@ -185,7 +188,7 @@ const Product = () => {
                 </OptionContainer>
                 <Checkbox disabled={tooglePopolar?true:false} onChange={handleFeatured} style={{marginRight:15}}>Featured</Checkbox>
                 <Checkbox disabled={toogleFeatured?true:false} onChange={handlePopular} style={{marginRight:15}}>Popular</Checkbox>
-                <Button  type='primary' onClick={()=> alert('kera')}  ><FileAddOutlined />Add Product</Button>
+                <Button  type='primary' onClick={()=> setAddProductDrawer(true)}  ><FileAddOutlined />Add Product</Button>
             </TopContainer>
             <MainContainer>
                 <Table loading={isProductLoading} pagination={{pageSize:5,showSizeChanger:false}} columns={columns} dataSource={productsData} />
