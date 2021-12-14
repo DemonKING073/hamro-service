@@ -40,11 +40,14 @@ const UpdateCategoryForm:FC<CustomDrawerProps> = ({onFinish, visible, onClose, d
             setCurrentRegion(newWorkingRegion)
         }
     }
+    useEffect(() => {
+        if(visible) form.resetFields()
+    }, [visible, form])
    
 
     return(
         <Drawer visible={visible} onClose={onClose}  closeIcon={<CloseOutlined style={{color:'white'}} />} headerStyle={{backgroundColor:'var(--primary)'}} title={<span style={{color:'white'}}>Add Category</span>} placement='right'>
-            <Form form={form} onFinish={onFinish} initialValues={{name:'', regionId: currentRegion?.id}} layout='vertical'>
+            <Form form={form} onFinish={onFinish} initialValues={{name: data?.name, regionId: data?.regionId}} layout='vertical'>
                 <Form.Item
                     label='Name'
                     name='name'

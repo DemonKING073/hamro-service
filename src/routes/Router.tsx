@@ -8,6 +8,7 @@ import Region from "../features/Region/index"
 import Category from '../features/Category/index'
 import Auth from '../Auth'
 import Vendor from '../features/Vendor/index'
+import Product from '../features/product/index'
 
 const Router = () => {
     return(
@@ -17,6 +18,7 @@ const Router = () => {
                 <Route element={<Auth />}>
                     <Route path='/category' element={<Category />} />
                     <Route path='/vendor' element={<Vendor />} />
+                    <Route path='/product' element={<Product />} />
                     <Route path='/baseproducts' element={<Products />} />
                     <Route path='/region' element={<Region />} />
                     <Route path='/orders' element={<Orders />} />
