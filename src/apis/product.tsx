@@ -1,5 +1,4 @@
 import axiosInstance from "../axiosInstance";
-import ProductProps from "../types/Product";
 
 
 export const getProducts = async (regionId: number) => (await axiosInstance.get('/product/all', {headers: { 'regionId': `${regionId}`}})).data 

@@ -3,12 +3,10 @@ import { Button, Checkbox, Drawer, DrawerProps, Form, Input, Select } from "antd
 import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getCategory } from "../../../apis/category";
 import { getRegion } from "../../../apis/region";
 import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
 import RegionProps from '../../../types/Region'
-import CategoryProp from '../../../types/Category'
 import BaseProductProp from '../../../types/BaseProduct'
 import ProductProps from "../../../types/Product";
 import VendorProps from '../../../types/Vendor'
@@ -47,7 +45,7 @@ const UpdateProductForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose, d
             if(apiError && apiError.message) NotificationService.showNotification('error', apiError.message.toString())
         }
     })
-    const {data: baseProduct, isLoading: isBaseProductLoading, refetch: refetchBaseProducts } = useQuery(['fetchBaseProduct', currentRegion],() => {
+    const {data: baseProduct} = useQuery(['fetchBaseProduct', currentRegion],() => {
         if(currentRegion) return getBaseProducts(currentRegion.id)
     }, {
         onError: (err) => {
@@ -61,7 +59,7 @@ const UpdateProductForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose, d
             if(data) setWorkingBaseProduct(data[0])
         }
     })
-    const { data: vendorDatas, refetch: refetchVendorData } = useQuery(['fetchVendor', currentRegion], () => {
+    const { data: vendorDatas} = useQuery(['fetchVendor', currentRegion], () => {
         if(currentRegion) return GetVendor(currentRegion.id)
     },{
         onError: (err) => {

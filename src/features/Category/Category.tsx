@@ -1,5 +1,5 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Image, Modal, Select, Table, CheckboxProps } from "antd";
+import { Button, Checkbox, Form, Image, Modal, Select, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";

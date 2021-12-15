@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react"
 import MainTemplate from "../../components/MainTemplate"
 import styled from "styled-components"
-import BaseProductProps from "../../types/BaseProduct"
 import RegionProps from '../../types/Region'
 import { Button, Select, Table, Form, Modal } from "antd"
 import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
-import { createBaseProducts, getBaseProducts, removeBaseProduct, updateBaseProducts } from "../../apis/baseProduct"
 import ApiError from "../../types/ApiError"
 import { useQuery, useMutation } from 'react-query'
 import NotificationService from "../../services/NotificationService"

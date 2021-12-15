@@ -1,9 +1,8 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Drawer, DrawerProps, Form, Input, Select } from "antd";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getCategory } from "../../../apis/category";
 import { getRegion } from "../../../apis/region";
 import axiosCheckError from "../../../axiosCheckError";
 import NotificationService from "../../../services/NotificationService";
