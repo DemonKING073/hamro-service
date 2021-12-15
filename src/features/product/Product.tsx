@@ -13,12 +13,14 @@ import NotificationService from "../../services/NotificationService";
 import ProductProps from "../../types/Product";
 import RegionProps from '../../types/Region'
 import CreateProductForms from "./forms/CreateProductForms";
+import UpdateProductForms from "./forms/UpdateProductForms";
 
 
 const Product = () => {
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()    
     const [ currentProduct, setCurrentProduct ] = useState<ProductProps>()
     const [ addProductDrawer, setAddProductDrawer ] = useState<boolean>(false)
+    const [ updateProductDrawer, setUpdateProductDrawer ] = useState<boolean>(false)
     const [ delModal, setDelModal ] = useState<boolean>(false)
     const { Option } = Select;
     const [form] = Form.useForm()
@@ -143,7 +145,7 @@ const Product = () => {
             key:'action',
             width:'25%',
             render: (value: number, record: ProductProps) => <TableButtonContainer> 
-            <CButton variant='normal' onClick={()=> alert('fck you')} title='Update' />
+            <CButton variant='normal' onClick={()=> { setUpdateProductDrawer(true); setCurrentProduct(record)}} title='Update' />
             <CButton variant='danger' onClick={() => { setDelModal(true); setCurrentProduct(record)}} title='Remove' />
             </TableButtonContainer>
         }
@@ -171,6 +173,7 @@ const Product = () => {
                 Confirm your delete request!
             </Modal>
             <CreateProductForms onFinish={()=> alert('kera')} visible={addProductDrawer} onClose={()=>setAddProductDrawer(false)} />
+            <UpdateProductForms region={currentRegion?.id} data={currentProduct} onFinish={()=>alert('kera')} visible={updateProductDrawer} onClose={()=> setUpdateProductDrawer(false)} />
             <TopContainer>
                 <OptionContainer>
                     <Form layout='inline' form={form}  initialValues={{regionId:currentRegion?.id}}>
