@@ -5,10 +5,13 @@ import { Logo } from "./Logo";
 import { NavLink } from 'react-router-dom'
 import SidebarItem from "./SideBarItem";
 import { AreaChartOutlined, InboxOutlined, CarOutlined, GlobalOutlined, UnorderedListOutlined, HomeOutlined,DropboxOutlined } from '@ant-design/icons'
+import LocalStorageService from "../services/LocalStorageServices";
 
 
 
 export const Sidebar = () => {
+    const Roles = LocalStorageService.getRoles()
+    console.log('yo chai role ho', Roles)
     return(
         <Container>
             <div>

@@ -31,23 +31,38 @@ const FormButton = styled(Button)`
     margin-top: 4px;
 `
 
+interface Role{
+    id: number;
+    name: string;
+    region: {
+      id: number,
+      name: string,
+      slug: string,
+      location:{
+        lat: number,
+        lng: number,
+      },
+      active: boolean
+    }
+  } 
 
 
 const Login = () => {
-    // test
     const navigate = useNavigate()
     const [form] = Form.useForm()
     const onFinish = async (values:any) => {
         console.log('Received values of form: ', values);
         try {
-            const response = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
+            const response  = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
             if(response.data.roles.length === 0) {
                 NotificationService.showNotification('error','You are not Authorized!')
                 LocalStorageService.clearTokens()
                 return navigate('/login')
             }
+            const data: {accessToken: string, roles: Role[]} = response.data
             LocalStorageService.setAccessToken(response.data.accessToken)
-            LocalStorageService.setUserRole(response.data.roles)
+            console.log(response.data.roles)
+            LocalStorageService.setUserRole(data.roles)
             navigate('/')
             NotificationService.showNotification('success','Logged Successfully!')
         } catch(err) {

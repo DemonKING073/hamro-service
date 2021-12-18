@@ -23,11 +23,13 @@ type CustomDrawerProps = DrawerProps & {
 
 const showValues = (val: any) => {
     console.log('yo values hoo',val)
+
 } 
 
 
 
 const { Option } = Select;
+
 const CreateProductForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) => {
     const [ workingBaseProduct, setWorkingBaseProduct ] = useState<BaseProductProp>()
     const [form] = Form.useForm()
@@ -67,7 +69,6 @@ const CreateProductForms:FC<CustomDrawerProps> = ({onFinish, visible, onClose}) 
             }
         },
         onSuccess: (data: VendorProps[]) => {
-            console.log(data)
             if(data) setCurrentVendor(data[0])
         }
     })
