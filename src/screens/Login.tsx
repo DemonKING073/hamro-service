@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import { Form, Button, Input, notification } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
@@ -7,6 +7,7 @@ import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 import LocalStorageService from "../services/LocalStorageServices"
 import NotificationService from "../services/NotificationService"
+import { UserContext } from "../context/UserContext"
 
 
 const Container = styled.div`
@@ -48,10 +49,10 @@ interface Role{
 
 
 const Login = () => {
+    const userContext = useContext(UserContext);
     const navigate = useNavigate()
     const [form] = Form.useForm()
     const onFinish = async (values:any) => {
-        console.log('Received values of form: ', values);
         try {
             const response  = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
             if(response.data.roles.length === 0) {
@@ -63,6 +64,7 @@ const Login = () => {
             LocalStorageService.setAccessToken(response.data.accessToken)
             console.log(response.data.roles)
             LocalStorageService.setUserRole(data.roles)
+            userContext?.setRoles(response.data.roles)
             navigate('/')
             NotificationService.showNotification('success','Logged Successfully!')
         } catch(err) {

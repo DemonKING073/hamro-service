@@ -16,15 +16,10 @@ import CreateCategoryForm from "./forms/CreateCategoryForm";
 import CreateSubCategoryForm from "./forms/CreateSubCategoryForm";
 import UpdateCategoryForm from "./forms/UpdateCategoryForm";
 import LocalStorageService from "../../services/LocalStorageServices";
+import RoleProp from "../../types/RoleProp";
 
-interface RoleProp {
-    id: number;
-    name: string;
-    region: RegionProps;
-}
 
 const Category = () => {
-
     const Roles = LocalStorageService.getRoles()
     const [ delModal, setDelModal ] = useState<boolean>(false)
     const [ getCategoryWithProduct, setGetCategoryWithProduct ] = useState<boolean>(false)
@@ -191,9 +186,6 @@ const Category = () => {
                                 <Option key={item.region.id} value={item.region.id}>{item.region.name}</Option>
                             )  )
                         }
-                        {/* {regionData?.map((item: RegionProps) => (
-                            <Option key={item.id} value={item.id} >{item.name}</Option>
-                        ))} */}
                     </Select>
                     </Form.Item>
                 </Form>

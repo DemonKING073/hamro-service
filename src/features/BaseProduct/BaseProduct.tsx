@@ -98,14 +98,14 @@ const BaseProduct = () => {
             title: 'Id',
             dataIndex: 'id',    
             key: 'id',
-            width:'5%',
+            width:'10%',
             
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            width:'25%',
+            width:'20%',
             ellipsis: {
                 showTitle: false,
             },

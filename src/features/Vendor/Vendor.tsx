@@ -15,11 +15,11 @@ import CreateVendorForms from "./forms/CreateVendorForms"
 import { DeleteVendor, GetVendor } from "../../apis/vendor"
 import VendorProps from '../../types/Vendor'
 import UpdateVendorForms from "./forms/UpdateVendorForms"
-
-
+import LocalStorageService from "../../services/LocalStorageServices"
+import RoleProp from "../../types/RoleProp"
 
 const Vendor = () => {
-
+    const Roles = LocalStorageService.getRoles()
     const [ addVendorDrawer, setAddVendorDrawer ] = useState<boolean>(false)
     const [ updateVendorDrawer, setUpdateVendorDrawer ] = useState<boolean>(false)
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()
@@ -29,14 +29,17 @@ const Vendor = () => {
     const [form] = Form.useForm()
 
 
-
     const addVendor = (val: any) => {
         console.log(val)
     }
 
     const { data: regionData } = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            if(regionData) setCurrentRegion(regionData[0])
+            if(Roles && Roles[0].name==='RegionalAdmin'){
+                if(regionData) setCurrentRegion(Roles[0].region)
+            } else {
+                setCurrentRegion(regionData[0])
+            }
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
@@ -148,9 +151,14 @@ const Vendor = () => {
                         label='Region'
                     >
                     <Select onChange={handleRegionChange} >
-                        {regionData?.map((item: RegionProps) => (
-                            <Option key={item.id} value={item.id} >{item.name}</Option>
-                        ))}
+                        {Roles&& Roles[0].name==='SuperAdmin'?
+                            regionData?.map((item: RegionProps) =>(
+                                <Option key={item.id} value={item.id}>{item.name}</Option>
+                            )):
+                            Roles?.map((item: RoleProp) =>(
+                                <Option key={item.region.id} value={item.region.id}>{item.region.name}</Option>
+                            )  )
+                        }
                     </Select>
                     </Form.Item>
                     </Form>

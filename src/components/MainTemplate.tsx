@@ -1,5 +1,5 @@
 import { Input, notification } from "antd";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import styled from "styled-components";
 import { Sidebar } from "./Sidebar";
 import { SearchOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
@@ -14,6 +14,8 @@ const MainTemplate:FC = ({children}) => {
         notification.success({message:'Logged Out Successfully!'})
         navigate('/login')
     }
+
+
 
     return(
         <Container>

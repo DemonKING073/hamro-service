@@ -9,14 +9,17 @@ import axiosCheckError from "../../axiosCheckError";
 import CButton from "../../components/CButton";
 import MainTemplate from "../../components/MainTemplate";
 import { TopContainer } from "../../components/TopContainer";
+import LocalStorageService from "../../services/LocalStorageServices";
 import NotificationService from "../../services/NotificationService";
 import ProductProps from "../../types/Product";
 import RegionProps from '../../types/Region'
+import RoleProp from "../../types/RoleProp";
 import CreateProductForms from "./forms/CreateProductForms";
 import UpdateProductForms from "./forms/UpdateProductForms";
 
 
 const Product = () => {
+    const Roles = LocalStorageService.getRoles()
     const [ currentRegion, setCurrentRegion ] = useState<RegionProps>()    
     const [ currentProduct, setCurrentProduct ] = useState<ProductProps>()
     const [ addProductDrawer, setAddProductDrawer ] = useState<boolean>(false)
@@ -29,7 +32,11 @@ const Product = () => {
 
     const { data: regionData } = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            if(regionData) setCurrentRegion(regionData[0])
+            if(Roles && Roles[0].name==='RegionalAdmin'){
+                if(regionData) setCurrentRegion(Roles[0].region)
+            } else {
+                setCurrentRegion(regionData[0])
+            }
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
@@ -182,9 +189,14 @@ const Product = () => {
                         label='Region'
                     >
                     <Select onChange={handleRegionChange} >
-                        {regionData?.map((item: RegionProps) => (
-                            <Option key={item.id} value={item.id} >{item.name}</Option>
-                        ))}
+                        {Roles&& Roles[0].name==='SuperAdmin'?
+                            regionData?.map((item: RegionProps) =>(
+                                <Option key={item.id} value={item.id}>{item.name}</Option>
+                            )):
+                            Roles?.map((item: RoleProp) =>(
+                                <Option key={item.region.id} value={item.region.id}>{item.region.name}</Option>
+                            )  )
+                        }
                     </Select>
                     </Form.Item>
                     </Form>
