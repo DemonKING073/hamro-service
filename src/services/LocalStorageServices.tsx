@@ -8,6 +8,10 @@ export default abstract class LocalStorageService {
     static setAccessToken(token: string): void {
       localStorage.setItem(this.ACCESS_TOKEN, token);
     }
+
+    static setUserRole(data : any): void {
+      localStorage.setItem('Roles', data)
+    }
   
     static getAccessToken(): string | null {
       return localStorage.getItem(this.ACCESS_TOKEN);

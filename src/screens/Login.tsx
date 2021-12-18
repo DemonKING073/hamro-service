@@ -6,6 +6,7 @@ import { Logo } from "../components/Logo"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 import LocalStorageService from "../services/LocalStorageServices"
+import NotificationService from "../services/NotificationService"
 
 
 const Container = styled.div`
@@ -24,11 +25,6 @@ const  FormContainer = styled.div`
     padding-left: 18px;
     padding-right: 18px;
 `
-// const FormTitle = styled.h1`
-//     text-align: center;
-//     margin: 18px 4px;
-//     font-weight: bold;
-// `
 
 const FormButton = styled(Button)`
     width: 100% ;
@@ -44,11 +40,15 @@ const Login = () => {
         console.log('Received values of form: ', values);
         try {
             const response = await axios.post('http://localhost:8080/auth/login',{"phone":values.username,"password":values.password})
-            notification.success({
-                message:'Login Successful!'
-            })
+            if(response.data.roles.length === 0) {
+                NotificationService.showNotification('error','You are not Authorized!')
+                LocalStorageService.clearTokens()
+                return navigate('/login')
+            }
             LocalStorageService.setAccessToken(response.data.accessToken)
+            LocalStorageService.setUserRole(response.data.roles)
             navigate('/')
+            NotificationService.showNotification('success','Logged Successfully!')
         } catch(err) {
             console.error(err)
             notification.error({message:'Login Failed!'})
