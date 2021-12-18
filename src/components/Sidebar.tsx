@@ -17,16 +17,23 @@ export const Sidebar = () => {
             <div>
                 <Logo />
             </div>
+            <TitleContainer>
+                <Title>[ {Roles&& Roles[0].name==='SuperAdmin'?'Super Admin':'Regional Admin'} ]</Title>
+            </TitleContainer>
             <Nav>
                 <NavLink to='/'  >
                     <SidebarItem Icon={AreaChartOutlined} text='Dashboard' />
                 </NavLink>
-                <NavLink to='/region'  >
-                    <SidebarItem Icon={GlobalOutlined} text='Region' />
-                </NavLink>
-                <NavLink to='/baseproducts'  >
-                    <SidebarItem Icon={InboxOutlined} text='Base Product' />
-                </NavLink>
+                {
+                    Roles&& Roles[0].name==='SuperAdmin'?<>
+                    <NavLink to='/region'  >
+                        <SidebarItem Icon={GlobalOutlined} text='Region' />
+                    </NavLink>
+                    <NavLink to='/baseproducts'  >
+                        <SidebarItem Icon={InboxOutlined} text='Base Product' />
+                    </NavLink>
+                    </>:null
+                }
                 <NavLink to='/category'  >
                     <SidebarItem Icon={UnorderedListOutlined} text='Category' />
                 </NavLink>
@@ -56,4 +63,17 @@ const Nav = styled.nav`
     display: flex;
     flex-direction: column;
 `
+const TitleContainer = styled.div`
+    padding: 10px;
+    padding-bottom: 0px;
+    // background: red;
+`
+const Title = styled.h3`
+    text-align: center;
+    margin: 0;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 14px;
+`
+
 

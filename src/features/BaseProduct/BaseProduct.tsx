@@ -3,7 +3,7 @@ import MainTemplate from "../../components/MainTemplate"
 import styled from "styled-components"
 import BaseProductProps from "../../types/BaseProduct"
 import RegionProps from '../../types/Region'
-import { Button, Select, Table, Form, Modal } from "antd"
+import { Button, Select, Table, Form, Modal, Tooltip } from "antd"
 import axios from "axios"
 import CButton from "../../components/CButton"
 import { FileAddOutlined } from "@ant-design/icons"
@@ -98,19 +98,36 @@ const BaseProduct = () => {
             title: 'Id',
             dataIndex: 'id',    
             key: 'id',
-            width:'5%'
+            width:'5%',
+            
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            width:'25%'
+            width:'25%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (name: string) => (
+                <Tooltip placement='topLeft' title={name}>
+                    {name}
+                </Tooltip>
+            )
         },
         {
             title: 'Slug',
             dataIndex: 'slug',
             key: 'slug',
-            width:'20%'
+            width:'20%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (slug: string) => (
+                <Tooltip placement='topLeft' title={slug}>
+                    {slug}
+                </Tooltip>
+            )
         },
         {
             title: 'Region ID',

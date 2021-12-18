@@ -1,5 +1,5 @@
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Image, Modal, Select, Table } from "antd";
+import { Button, Checkbox, Form, Image, Modal, Select, Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
@@ -71,7 +71,15 @@ const Category = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            width:'20%'
+            width:'20%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (name: string) => (
+                <Tooltip placement='topLeft' title={name}>
+                    {name}
+                </Tooltip>
+            )
         },
         {
             title: 'Level',
@@ -89,7 +97,15 @@ const Category = () => {
             title: 'Slug',
             dataIndex: 'slug',
             key: 'slug',
-            width:'20%'
+            width:'20%',
+            ellipsis: {
+                showTitle: false,
+            },
+            render: (slug: string) => (
+                <Tooltip placement='topLeft' title={slug}>
+                    {slug}
+                </Tooltip>
+            )
         },
         {
             title: 'Image',

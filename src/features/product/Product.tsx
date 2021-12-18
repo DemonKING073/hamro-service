@@ -29,7 +29,7 @@ const Product = () => {
 
     const { data: regionData } = useQuery('fetchRegion',getRegion,{
         onSuccess: (regionData) => {
-            if(regionData) setCurrentRegion(regionData[1])
+            if(regionData) setCurrentRegion(regionData[0])
         },
         onError: (err) => {
             const apiError = axiosCheckError(err)
@@ -194,7 +194,7 @@ const Product = () => {
                 <Button  type='primary' onClick={()=> setAddProductDrawer(true)}  ><FileAddOutlined />Add Product</Button>
             </TopContainer>
             <MainContainer>
-                <Table loading={isProductLoading} pagination={{pageSize:5,showSizeChanger:false}} columns={columns} dataSource={productsData} />
+                <Table loading={isProductLoading} pagination={{pageSize:6,showSizeChanger:false}} columns={columns} dataSource={productsData} />
             </MainContainer>
         </MainTemplate>
     )
