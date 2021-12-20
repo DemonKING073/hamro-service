@@ -165,7 +165,7 @@ const BaseProduct = () => {
     },[currentRegion, form])
 
     return(
-        <MainTemplate>
+        <>
             <Modal  visible={delModal} okText='Remove' onOk={() => deleteBaseProduct(workingBaseProduct?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
@@ -195,7 +195,7 @@ const BaseProduct = () => {
             <MainContainer>
                 <Table loading={isBaseProductLoading} pagination={{pageSize:6}} columns={columns} dataSource={baseProduct} />
             </MainContainer>            
-        </MainTemplate>
+        </>
     )
 }
 

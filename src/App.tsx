@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import MainTemplate from './components/MainTemplate';
 import { UserProvider } from './context/UserContext';
 import { GlobalStyles } from './Global';
 import { GlobalAntStyles } from './GlobalAntStyles';
@@ -9,9 +11,11 @@ function App() {
     <>
       <GlobalStyles />
       <GlobalAntStyles />
+      <BrowserRouter>
       <UserProvider>
-      <Router />
+        <MainTemplate/>
       </UserProvider>
+      </BrowserRouter>
     </>
   );
 }

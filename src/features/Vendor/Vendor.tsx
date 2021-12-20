@@ -130,7 +130,7 @@ const Vendor = () => {
         form.resetFields()
     },[currentRegion, form])
     return(
-        <MainTemplate>
+        <>
             <Modal  visible={delModal} okText='Remove' onOk={() => removeVendor(currentVendor?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
@@ -168,7 +168,7 @@ const Vendor = () => {
             <MainContainer>
                 <Table  pagination={{pageSize:5}} columns={columns} dataSource={vendorDatas} />
             </MainContainer>            
-        </MainTemplate>
+        </>
     )
 }
 

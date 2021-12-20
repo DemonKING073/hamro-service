@@ -113,7 +113,7 @@ const Region = () => {
 
    
     return(
-        <MainTemplate>
+        <>
             <Modal  visible={delModal} okText='Remove' onOk={() => DeleteRegion(workingRecord?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
@@ -137,7 +137,7 @@ const Region = () => {
             <TableContainer>
                 <Table  loading={isRegionLoading} pagination={{pageSize:5}} columns={columns} dataSource={regionDatas} />
             </TableContainer>
-        </MainTemplate>
+        </>
     )
 }
 

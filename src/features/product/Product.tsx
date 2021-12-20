@@ -175,7 +175,7 @@ const Product = () => {
         setCurrentRegion(newRegion)
     }
     return(
-        <MainTemplate>
+        <>
             <Modal  visible={delModal} okText='Remove' onOk={() => removeProduct(currentProduct?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
@@ -208,7 +208,7 @@ const Product = () => {
             <MainContainer>
                 <Table loading={isProductLoading} pagination={{pageSize:6,showSizeChanger:false}} columns={columns} dataSource={productsData} />
             </MainContainer>
-        </MainTemplate>
+        </>
     )
 }
 

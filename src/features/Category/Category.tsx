@@ -163,7 +163,7 @@ const Category = () => {
     }
 
     return(
-        <MainTemplate>
+        <>
             <Modal  visible={delModal} okText='Remove' onOk={() => removeCategory(currentCategory?.id)} onCancel={() => setDelModal(false)}>
                 Confirm your delete request!
             </Modal>
@@ -196,7 +196,7 @@ const Category = () => {
             <MainContainer>
                 <Table pagination={{pageSize:4}}  loading={isCategoryDataLoading} dataSource={categoryData} columns={columns} />
             </MainContainer>
-        </MainTemplate>
+        </>
     )
 }
 

@@ -12,7 +12,6 @@ import Product from '../features/product/index'
 
 const Router = () => {
     return(
-        <BrowserRouter>
             <Routes >
             <Route path='/login' element={<Login />} />
                 <Route element={<Auth />}>
@@ -25,7 +24,6 @@ const Router = () => {
                     <Route path='/' element={<Home />} />
                 </Route>
             </Routes>
-        </BrowserRouter>
     ) 
 }
 

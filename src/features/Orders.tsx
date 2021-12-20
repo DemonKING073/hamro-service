@@ -3,9 +3,9 @@ import MainTemplate from "../components/MainTemplate"
 
 const Order = () => {
     return(
-        <MainTemplate>
+        <>
             This is Order
-        </MainTemplate>
+        </>
     )
 }
 

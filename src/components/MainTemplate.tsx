@@ -5,6 +5,14 @@ import { Sidebar } from "./Sidebar";
 import { SearchOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 import LocalStorageService from "../services/LocalStorageServices";
 import { useNavigate } from "react-router";
+import Login from "../screens/Login";
+import Vendor from "../features/Vendor";
+import Product from "../features/product";
+import Region from "../features/Region";
+import Home from "../screens/Home";
+import { Routes, Route} from 'react-router-dom'
+import Auth from "../Auth";
+import Router from "../routes/Router";
 // import ScrollBarWraper from "./ScrollBarWraper";
 
 const MainTemplate:FC = ({children}) => {
@@ -34,7 +42,9 @@ const MainTemplate:FC = ({children}) => {
                         </IconOutline>
                     </IconBox>
                 </TopPanel>
-                <RouteContents> {children} </RouteContents>
+                <RouteContents> 
+                    <Router />
+                </RouteContents>
             </SubContainer>
         </Container>
     )
